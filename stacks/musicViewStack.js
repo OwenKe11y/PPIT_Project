@@ -2,12 +2,12 @@ import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import MusicScreen from '../components/musicView';
 
-const HomeStack = createStackNavigator();
+const MusicStack = createStackNavigator();
 
 export default function MusicViewScreen() {
   return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen name="Music"
+    <MusicStack.Navigator>
+      <MusicStack.Screen name="Music"
         component={MusicScreen}
         options={{
           title: 'Music Screen',
@@ -23,7 +23,7 @@ export default function MusicViewScreen() {
           },
         }}
       />
-    </HomeStack.Navigator>
+    </MusicStack.Navigator>
   );
 }
 

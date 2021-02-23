@@ -6,11 +6,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
  
 //component imports 
-import HomeStackScreen from './stacks/homeStack';
+import HomeLoginStack from './stacks/homeStack';
 import MusicViewScreen from './stacks/musicViewStack';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
 
 //declare a new instance of a navbar
 const Tab = createBottomTabNavigator();
@@ -46,7 +47,7 @@ export default function App() {
         }}>
 
         {/* rendering the components on the navbar */}
-        <Tab.Screen name="Home" component={HomeStackScreen} />
+        <Tab.Screen name="Home" component={HomeLoginStack} />
         <Tab.Screen name="Music" component={MusicViewScreen} />
       </Tab.Navigator>
     </NavigationContainer>
