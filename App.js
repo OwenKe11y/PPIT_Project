@@ -7,10 +7,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
  
 //component imports 
 import HomeScreen  from './components/home';
-import FlowerView  from './components/flowerView';
+import MusicScreen from './components/musicView';
 
 //icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
 
 //declare a new instance of a navbar
 const Tab = createBottomTabNavigator();
@@ -30,24 +31,24 @@ export default function App() {
               iconName = focused
                 ? 'home'
                 : 'home-outline';
-            } else if (route.name === 'Flowers') {
+            } else if (route.name === 'Music') {
               iconName = focused
-                ? 'rose-sharp'
-                : 'rose-outline';
+                ? 'musical-notes-sharp'
+                : 'musical-notes-outline';
             }
             return <Ionicons name={iconName} size={size} color={color} />;
           },
         })}
 
         tabBarOptions={{
-          activeBackgroundColor: 'pink',
-          activeTintColor: 'tomato',
+          activeBackgroundColor: '#9deb98',
+          activeTintColor: '#298c23',
           inactiveTintColor: 'gray',
         }}>
 
         {/* rendering the components on the navbar */}
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Flowers" component={FlowerView} />
+        <Tab.Screen name="Music" component={MusicScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
