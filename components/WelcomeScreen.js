@@ -8,7 +8,7 @@ export default function WelcomeScreen ({navigation}) {
       style={styles.background}
       source={require('../assets/background.jpg')}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>Welcome to Firebase/Firestore Example</Text>
+        <Text style={styles.title}>Welcome to your    Music App</Text>
       </View>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Sign Up')} >
         <Text style={styles.buttonText}>Sign Up</Text>
@@ -29,25 +29,25 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 200,
-    borderRadius: 15,
-    borderWidth: 3,
+    
+    borderWidth: 2,
     borderColor: 'white',
-    backgroundColor: '#4ecdc4',
-    padding: 5,
-    margin: '2%'
+    backgroundColor: '#4D2973',
+    padding: 14,
+    margin: '8%'
   },
   buttonText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'navy',
+    color: 'white',
     textAlign: 'center'
   },
   inlineText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'navy',
+    color: 'white',
     textAlign: 'center',
-    marginTop: '5%',
+    marginTop: '2%',
   },
   title: {
     fontSize: 35,

@@ -41,7 +41,7 @@ export default function SignIn() {
       />
 
       <TouchableOpacity style={styles.button} onPress={handlePress}>
-        <Text style={styles.buttonText}>Sumbit</Text>
+        <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
 
     </View>
