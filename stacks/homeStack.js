@@ -1,126 +1,76 @@
-//React Imports
+
+import 'react-native-gesture-handler';
+
 import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Dashboard from '../screens/Dashboard'
 
-//Component Imports
-import HomeScreen from '../components/home';
-import LoginScreen from '../components/login';
-
-//Ionicons
+//icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-//Stacks
 const HomeStack = createStackNavigator();
-const LoginStack = createStackNavigator();
-const Login = createStackNavigator();
 
-//The Login Icon on the top right of the header
-const LoginIcon = ({ navigation }) => (
-  <TouchableOpacity
-    //use navigation from Navigation Stack to switch to Grid
-    onPress={() => navigation.navigate('Login')}>
-    <Ionicons name="log-in-sharp" size={32} color="white" />
-  </TouchableOpacity>
-)
-
-//The header for the login screen 
-function LoginStackScreen({ navigation }) {
+function HomeViewScreen() {
   return (
-    <LoginStack.Navigator>
-      <LoginStack.Screen
-        name="Login"
-        component={LoginScreen}
+    <HomeStack.Navigator>
+      <HomeStack.Screen name="Music"
+        component={Dashboard}
         options={{
-
-          title: 'Login',
+          title: 'Dashboard Screen',
           headerTitleAlign: 'center',
+
           headerStyle: {
             backgroundColor: '#9deb98',
           },
-
-          headerLeft: () => (
-            <View style={styles.container}>
-              <TouchableOpacity
-                //use navigation from Navigation Stack to switch to Grid
-                onPress={() => navigation.goBack()}>
-                <Ionicons name="arrow-back" size={32} color="white" />
-
-
-              </TouchableOpacity>
-            </View>
-          ),
+          
           headerTintColor: '#fff',
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-        }}
-      >
-
-      </LoginStack.Screen>
-    </LoginStack.Navigator>
-  );
-}
-
-//Home Screen Page with custom header 
-function HomeStackScreen({ navigation }) {
-  return (
-
-    <HomeStack.Navigator >
-      <HomeStack.Screen
-
-        name="HomeScreen"
-        component={HomeScreen}
-        options={{
-          headerLeft: () => (
-            <View style={styles.container}>
-              <LoginIcon navigation={navigation}></LoginIcon>
-            </View>
-          ),
-
-          title: 'Home',
-          headerTitleAlign: 'center',
-          headerStyle: {
-            backgroundColor: '#9deb98',
-          },
-
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-
         }}
       />
     </HomeStack.Navigator>
   );
 }
 
-//Navigator between the home and Login Page
-function MyHome() {
-  return (
-    <Login.Navigator screenOptions={{ headerShown: false }}>
-      <Login.Screen name="HomeStack" component={HomeStackScreen} />
-      <Login.Screen name="Login" component={LoginStackScreen} />
+//declare a new instance of a navbar
+const Tab = createBottomTabNavigator();
 
-    </Login.Navigator>
-  );
-}
-
-//Export the Navigator
-export default function HomeLoginStack() {
+//main app
+export default function TabBarHome() {
   return (
     <NavigationContainer independent={true}>
-      <MyHome />
+      {/* Navbar style and functionality */}
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            // This is just so the icons change colour and appearance when pressed
+            if (route.name === 'Home') {
+              iconName = focused
+                ? 'home'
+                : 'home-outline';
+            } else if (route.name === 'Music') {
+              iconName = focused
+                ? 'musical-notes-sharp'
+                : 'musical-notes-outline';
+            }
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}
+
+        tabBarOptions={{
+          activeBackgroundColor: '#9deb98',
+          activeTintColor: '#298c23',
+          inactiveTintColor: 'gray',
+        }}>
+
+        {/* rendering the components on the navbar */}
+        <Tab.Screen name="Home" component={HomeViewScreen} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-
-  container: {
-    margin: 10
-
-  },
-})
-
