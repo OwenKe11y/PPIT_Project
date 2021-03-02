@@ -1,6 +1,10 @@
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app'
+import { Alert } from 'react-native';
+
+// Firebase packages
 import 'firebase/firestore';
-import {Alert} from 'react-native';
+import 'firebase/storage';
+
 
 export async function registration(email, password, lastName, firstName) {
   try {
@@ -35,5 +39,25 @@ export async function loggingOut() {
     await firebase.auth().signOut();
   } catch (err) {
     Alert.alert('There is something wrong!', err.message);
+  }
+}
+
+// Uploads an image to firebase storage
+export async function upload() {
+  try {
+    // Create file from image
+    file = new File(["test"], "../assets/Owen.jpg");
+    
+    // Create a root reference
+    var storageRef = firebase.storage().ref();   
+    // Create a reference to 'images/mountains.jpg'
+    var reference = storageRef.child('Images/Owen.jpg');
+   
+    await reference.put(file);
+    console.log("Upload Success")
+
+  } catch (err) {
+    console.log("Failed file upload")
+    console.log(err)
   }
 }

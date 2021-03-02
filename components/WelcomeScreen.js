@@ -1,25 +1,39 @@
-import {ImageBackground, StyleSheet, View, Text} from 'react-native';
+import { ImageBackground, StyleSheet, View, Text } from 'react-native';
 import React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import * as firebase from 'firebase';
+import { upload } from '../firebase/firebaseMethods';
 
-export default function WelcomeScreen ({navigation}) {
+
+export default function WelcomeScreen({ navigation }) {
   return (
-     <ImageBackground
+    <ImageBackground
       style={styles.background}
       source={require('../assets/background.jpg')}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>Welcome to your    Music App</Text>
+        <Text style={styles.title}>Welcome to your Music App</Text>
       </View>
+      {/* Button for uploading test */}
+      <TouchableOpacity style={styles.button} onPress={uploadPress}>
+        <Text style={styles.buttonText}>Upload</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Sign Up')} >
         <Text style={styles.buttonText}>Sign Up</Text>
-       </TouchableOpacity>
+      </TouchableOpacity>
       <Text style={styles.inlineText}>Already have an account?</Text>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Sign In')}>
         <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
-     </ImageBackground>
+    </ImageBackground>
   )
 }
+
+// Calls upload() in firebaseMethods.js
+// Uploads image to firebase storage
+const uploadPress = () => {
+  console.log("uploadPress")
+  upload();
+};
 
 const styles = StyleSheet.create({
   background: {
@@ -29,7 +43,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 200,
-    
+
     borderWidth: 2,
     borderColor: 'white',
     backgroundColor: '#4D2973',
