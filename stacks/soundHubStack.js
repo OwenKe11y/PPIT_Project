@@ -1,18 +1,17 @@
-
 import 'react-native-gesture-handler';
 import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../components/AppScreens/Home';
+import SoundHubScreen from '../components/AppScreens/SoundHub';
 
-const HomePage = createStackNavigator();
+const SoundHubPage = createStackNavigator();
 
-export default function HomeStack() {
+export default function SoundHubStack() {
   return (
-    <HomePage.Navigator>
-      <HomePage.Screen name="Home"
-        component={HomeScreen}
+    <SoundHubPage.Navigator>
+      <SoundHubPage.Screen name="SoundHub"
+        component={SoundHubScreen}
         options={{
-          title: 'Home',
+          title: 'Sound Hub',
           headerTitleAlign: 'center',
           headerLeft: null,
           headerStyle: {
@@ -25,8 +24,7 @@ export default function HomeStack() {
           },
         }}
       />
-    </HomePage.Navigator>
+    </SoundHubPage.Navigator>
   );
 }
-
 

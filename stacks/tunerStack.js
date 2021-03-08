@@ -1,18 +1,17 @@
-
 import 'react-native-gesture-handler';
 import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../components/AppScreens/Home';
+import TunerScreen from '../components/AppScreens/Tuner';
 
-const HomePage = createStackNavigator();
+const TunerPage = createStackNavigator();
 
-export default function HomeStack() {
+export default function TunerStack() {
   return (
-    <HomePage.Navigator>
-      <HomePage.Screen name="Home"
-        component={HomeScreen}
+    <TunerPage.Navigator>
+      <TunerPage.Screen name="Tuner"
+        component={TunerScreen}
         options={{
-          title: 'Home',
+          title: 'Tuner',
           headerTitleAlign: 'center',
           headerLeft: null,
           headerStyle: {
@@ -25,8 +24,7 @@ export default function HomeStack() {
           },
         }}
       />
-    </HomePage.Navigator>
+    </TunerPage.Navigator>
   );
 }
-
 

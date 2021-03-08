@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Alert} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as firebase from 'firebase';
-import {loggingOut} from '../firebase/firebaseMethods';
+import {loggingOut} from '../../firebase/firebaseMethods';
 
 export default function HomeScreen({ navigation }) {
   let currentUserUID = firebase.auth().currentUser.uid;
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    backgroundColor: '#3FC5AB',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },

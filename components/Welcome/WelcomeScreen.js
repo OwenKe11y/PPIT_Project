@@ -1,15 +1,14 @@
 import { ImageBackground, StyleSheet, View, Text } from 'react-native';
 import React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import * as firebase from 'firebase';
-import { upload } from '../firebase/firebaseMethods';
+
 
 
 export default function WelcomeScreen({ navigation }) {
   return (
     <ImageBackground
       style={styles.background}
-      source={require('../assets/background.jpg')}>
+      source={require('../../assets/background.jpg')}>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Welcome to your Music App</Text>
       </View>
@@ -28,12 +27,7 @@ export default function WelcomeScreen({ navigation }) {
   )
 }
 
-// Calls upload() in firebaseMethods.js
-// Uploads image to firebase storage
-const uploadPress = () => {
-  console.log("uploadPress")
-  upload();
-};
+
 
 const styles = StyleSheet.create({
   background: {
