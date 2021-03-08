@@ -7,8 +7,9 @@ import WelcomeScreen from './components/WelcomeScreen';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import LoadingScreen from './components/LoadingScreen';
-import HomeViewScreen from './stacks/homeStack';
+
 import { LogBox } from 'react-native';
+import HomeStack from './stacks/HomeStack';
 
 LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 
@@ -24,10 +25,10 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
       <Stack.Screen name={'Loading'} component={LoadingScreen} options={{ headerShown: false }}/>
-      <Stack.Screen name='Home' component={WelcomeScreen} options={{ headerShown: false }}/>
+      <Stack.Screen name='Welcome' component={WelcomeScreen} options={{ headerShown: false }}/>
       <Stack.Screen name='Sign Up' component={SignUp}/>
       <Stack.Screen name='Sign In' component={SignIn}/>
-      <Stack.Screen name={'Dashboard'} component={HomeViewScreen} options={{ headerShown: false }} />
+      <Stack.Screen name={'Home'} component={HomeStack} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

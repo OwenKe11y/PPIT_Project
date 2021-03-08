@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as firebase from 'firebase';
 import {loggingOut} from '../firebase/firebaseMethods';
 
-export default function Dashboard({ navigation }) {
+export default function HomeScreen({ navigation }) {
   let currentUserUID = firebase.auth().currentUser.uid;
   const [firstName, setFirstName] = useState('');
 
@@ -32,7 +32,7 @@ export default function Dashboard({ navigation }) {
 
   const handlePress = () => {
     loggingOut();
-    navigation.replace('Home');
+    navigation.replace('Welcome');
   };
 
   return (
