@@ -3,8 +3,6 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as firebase from 'firebase';
 
-
-
 export default function WelcomeScreen({ navigation }) {
   return (
     <ImageBackground
@@ -21,12 +19,9 @@ export default function WelcomeScreen({ navigation }) {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Sign In')}>
         <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
-
     </ImageBackground>
   )
 }
-
-
 
 const styles = StyleSheet.create({
   background: {

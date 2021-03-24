@@ -5,6 +5,7 @@ import { Alert } from 'react-native';
 import 'firebase/firestore';
 import 'firebase/storage';
 
+const firebaseUri = [];
 
 export async function registration(email, password, lastName, firstName) {
   try {
@@ -43,21 +44,22 @@ export async function loggingOut() {
 }
 
 // Uploads an image to firebase storage
-export async function upload() {
+export async function upload(uri) {
   try {
-    // Create file from image
-    file = new File(["test"], "../assets/Owen.jpg");
-    
+    const response = await fetch(uri);
+    const blob = await response.blob();
     // Create a root reference
     var storageRef = firebase.storage().ref();   
     // Create a reference to 'images/mountains.jpg'
-    var reference = storageRef.child('Images/Owen.jpg');
-   
-    await reference.put(file);
-    console.log("Upload Success")
+    var reference = storageRef.child('Images/test.mp3');
+    var downloadUri = await reference.getDownloadURL();
+    firebaseUri.push(downloadUri);
+    console.log(firebaseUri[0]);
+    await reference.put(blob);
+    console.log("Upload Success");
 
   } catch (err) {
-    console.log("Failed file upload")
-    console.log(err)
+    console.log("Failed file upload");
+    console.log(err);
   }
 }

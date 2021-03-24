@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import React, { Component, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Alert, Modal, TouchableOpacity } from 'react-native';
 import { Audio } from 'expo-av'
 import { FloatingAction } from "react-native-floating-action";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { upload } from '../../firebase/firebaseMethods';
+import * as firebase from 'firebase/app'
 
 const actions = [
   {
@@ -17,6 +19,7 @@ const actions = [
     name: "bt_stop",
     position: 2,
     color: "#9deb98",
+    visible: false,
     icon: <Ionicons name="stop-circle-outline" color="white" size={26}></Ionicons>
   },
   {
@@ -31,7 +34,38 @@ const actions = [
 export default function SoundHubScreen({ navigation }) {
   const [recording, setRecording] = React.useState();
   const [sound, setSound] = React.useState();
+  
+  // https://dev.to/cirlorm_io/how-to-create-a-music-streaming-app-expo-rn-1724
+  // Resource here for loading clips
 
+  // firebase songs
+  const state = {
+    allSongs: [],
+    currentSongData: {},
+    playingStatus: 'nosound',
+    paused: false
+  };
+
+  //loadClips();
+
+  // load firebase sound clips
+  function loadClips() {
+    firebase
+      .database()
+      .ref('Images/')
+      .on('value', snapshot => {
+        let array = [];
+        console.log(snapshot+ 'test')
+        snapshot.forEach(child => {
+        array.push(child);
+        });
+        
+        state.allSongs = array;
+      }); 
+    
+  }
+
+  // start recording
   async function startRecording() {
     try {
       console.log('Requesting permissions..');
@@ -51,18 +85,26 @@ export default function SoundHubScreen({ navigation }) {
     }
   }
 
+  // stop recording
   async function stopRecording() {
     console.log('Stopping recording..');
     setRecording(undefined);
     await recording.stopAndUnloadAsync();
+
+    // var option = window.prompt("Enter name of clip or 'Cancel' to delete")
+    // if (option == 'Cancel' || option == null){
+    //   Alert.alert("Clip deleted")
+    // } else {
     const uri = recording.getURI();
     console.log('Recording stopped and stored at', uri);
+    upload(uri);
+    //}
   }
 
   async function playSound() {
     console.log('Loading Sound');
     const { sound } = await Audio.Sound.createAsync(
-      require('../../assets/DBC.mp3')
+      require('../../assets/sample3.mp3')
     );
     setSound(sound);
 
@@ -81,22 +123,45 @@ export default function SoundHubScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titleText}>SoundHub</Text>
+
+      {/* <Dialog.Container visible={visible}>
+        <Dialog.Title>Account delete</Dialog.Title>
+        <Dialog.Description>
+          Do you want to delete this account? You cannot undo this action.
+        </Dialog.Description>
+        <Dialog.Input label='clipInput'>
+          Enter name here
+        </Dialog.Input>
+        <Dialog.Button label="Cancel" onPress={saveCancel} />
+        <Dialog.Button label="Save" onPress={saveClip} />
+        
+      </Dialog.Container> */}
+
+      <TouchableOpacity onPressItem={playSound}>
+        <View>
+          <Text>
+            Play
+          </Text>
+        </View>
+      </TouchableOpacity>
+
       <FloatingAction
         color='#9deb98'
         actions={actions}
         onPressItem={name => {
-        if(name == "bt_rec"){
-          startRecording()
-        }
-        if(name == "bt_stop"){
-          stopRecording()
-        }
-        if(name == "bt_sound"){
-          playSound()
-        }
-        console.log(`selected button: ${name}`);
-        
+          if (name == "bt_rec") {
+            startRecording()
+            actions[1].visible = true;
+          }
+          if (name == "bt_stop") {
+            //showSaveOptions();
+            stopRecording()
+          }
+          if (name == "bt_sound") {
+            playSound()
+          }
+          console.log(`selected button: ${name}`);
+
         }}
       />
     </View>
