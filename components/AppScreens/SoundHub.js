@@ -1,10 +1,10 @@
 import React, { Component, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Alert, Modal, TouchableOpacity } from 'react-native';
-import { Audio } from 'expo-av'
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { Audio } from 'expo-av';
 import { FloatingAction } from "react-native-floating-action";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { upload } from '../../firebase/firebaseMethods';
-import * as firebase from 'firebase/app'
+import { upload, loadClips, sendArray, clipArray } from '../../firebase/firebaseMethods';
+import * as firebase from 'firebase/app';
 
 const actions = [
   {
@@ -28,43 +28,26 @@ const actions = [
     position: 3,
     color: "#9deb98",
     icon: <Ionicons name="volume-high-outline" color="white" size={26}></Ionicons>
+  },
+  {
+    text: "Load Clips",
+    name: "bt_loadClips",
+    position: 4,
+    color: "#9deb98",
+    icon: <Ionicons name="volume-high-outline" color="white" size={26}></Ionicons>
   }
 ];
+
+const clips = clipArray;
+
 
 export default function SoundHubScreen({ navigation }) {
   const [recording, setRecording] = React.useState();
   const [sound, setSound] = React.useState();
-  
+
   // https://dev.to/cirlorm_io/how-to-create-a-music-streaming-app-expo-rn-1724
   // Resource here for loading clips
-
-  // firebase songs
-  const state = {
-    allSongs: [],
-    currentSongData: {},
-    playingStatus: 'nosound',
-    paused: false
-  };
-
-  //loadClips();
-
-  // load firebase sound clips
-  function loadClips() {
-    firebase
-      .database()
-      .ref('Images/')
-      .on('value', snapshot => {
-        let array = [];
-        console.log(snapshot+ 'test')
-        snapshot.forEach(child => {
-        array.push(child);
-        });
-        
-        state.allSongs = array;
-      }); 
-    
-  }
-
+  loadClips();
   // start recording
   async function startRecording() {
     try {
@@ -124,44 +107,31 @@ export default function SoundHubScreen({ navigation }) {
   return (
     <View style={styles.container}>
 
-      {/* <Dialog.Container visible={visible}>
-        <Dialog.Title>Account delete</Dialog.Title>
-        <Dialog.Description>
-          Do you want to delete this account? You cannot undo this action.
-        </Dialog.Description>
-        <Dialog.Input label='clipInput'>
-          Enter name here
-        </Dialog.Input>
-        <Dialog.Button label="Cancel" onPress={saveCancel} />
-        <Dialog.Button label="Save" onPress={saveClip} />
-        
-      </Dialog.Container> */}
-
-      <TouchableOpacity onPressItem={playSound}>
-        <View>
-          <Text>
-            Play
-          </Text>
-        </View>
-      </TouchableOpacity>
+      <View style={styles.container}>
+        <FlatList
+          data={clips}
+          renderItem={({ item }) => <Text>{item.link}</Text> }
+        />
+      </View>
 
       <FloatingAction
         color='#9deb98'
         actions={actions}
         onPressItem={name => {
           if (name == "bt_rec") {
-            startRecording()
+            startRecording();
             actions[1].visible = true;
           }
           if (name == "bt_stop") {
-            //showSaveOptions();
-            stopRecording()
+            stopRecording();
           }
           if (name == "bt_sound") {
-            playSound()
+            playSound();
           }
+          if (name == "bt_loadClips") {
+          }
+          
           console.log(`selected button: ${name}`);
-
         }}
       />
     </View>
