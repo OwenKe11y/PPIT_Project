@@ -36,12 +36,12 @@ export default function MyTabsBar() {
         })}
 
         tabBarOptions={{
-          activeBackgroundColor: '#9deb98',
+          activeBackgroundColor: '#ed931c',
           activeTintColor: '#fff',
           inactiveTintColor: 'gray',
         }}>
             
-      <Tab.Screen name="Home" component={HomeStack} />
+      
       <Tab.Screen name="SoundHub" component={SoundHubStack} />
       <Tab.Screen name="Tuner" component={TunerStack}/>
     </Tab.Navigator>

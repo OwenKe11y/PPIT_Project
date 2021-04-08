@@ -15,7 +15,7 @@ export default function SoundHubStack() {
           headerTitleAlign: 'center',
           headerLeft: null,
           headerStyle: {
-            backgroundColor: '#9deb98',
+            backgroundColor: '#ed931c',
           },
           
           headerTintColor: '#fff',

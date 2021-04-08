@@ -5,6 +5,7 @@ import { FloatingAction } from "react-native-floating-action";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { upload, loadClips, sendArray, clipArray } from '../../firebase/firebaseMethods';
 import * as firebase from 'firebase/app';
+import { Image } from 'react-native-animatable';
 
 const actions = [
   {
@@ -106,16 +107,24 @@ export default function SoundHubScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.image}>
+        <Image
+          style={{ width:'100%', height:'100%'}}
+          source={require('../../assets/youmusic.jpg')}
+          />
+      </View>
 
-      <View style={styles.container}>
+      <View style={styles.itemList}>
         <FlatList
           data={clips}
-          renderItem={({ item }) => <Text>{item.link}</Text> }
+          renderItem=
+          {({ item }) => <Text>{item.link}</Text> }
+          keyExtractor={(item, index) => index.toString()}
         />
       </View>
 
       <FloatingAction
-        color='#9deb98'
+        color='#ed931c'
         actions={actions}
         onPressItem={name => {
           if (name == "bt_rec") {
@@ -144,18 +153,20 @@ const styles = StyleSheet.create({
   button: {
     width: 150,
     padding: 5,
-    backgroundColor: '#ff9999',
+    backgroundColor: '#ed931c',
     borderWidth: 2,
     borderColor: 'white',
     borderRadius: 15,
     alignSelf: 'center',
   },
+
   buttonText: {
     fontSize: 20,
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
   },
+
   container: {
     height: '100%',
     width: '100%',
@@ -163,6 +174,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   text: {
     textAlign: 'center',
     fontSize: 20,
@@ -172,10 +184,26 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
   },
+
   titleText: {
     textAlign: 'center',
     fontSize: 30,
     fontWeight: 'bold',
     color: '#2E6194',
   },
+
+  itemList: {
+    textAlign: 'center',
+    fontSize: 30,
+    fontWeight: 'bold',
+    margin:20
+    
+  },
+
+  image:{
+    alignItems: 'center',
+    width: '100%',
+    height: '40%',
+    marginTop:'70%'
+  }
 });
