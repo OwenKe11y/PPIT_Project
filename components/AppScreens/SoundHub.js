@@ -109,7 +109,7 @@ export default function SoundHubScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.image}>
         <Image
-          style={{ width:'100%', height:'100%'}}
+          style={{ width:'100%', height:'100%', borderBottomRightRadius:10, borderBottomLeftRadius:10}}
           source={require('../../assets/youmusic.jpg')}
           />
       </View>
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: '#e6e3e3',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -196,7 +196,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 30,
     fontWeight: 'bold',
-    margin:20
+    backgroundColor:'#fff',
+    borderRadius:10,
+    margin:8,
+    padding:7
     
   },
 
@@ -204,6 +207,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '40%',
-    marginTop:'70%'
+    marginTop:'70%',
+    backgroundColor:'#fff',
+    borderRadius:10,
+    padding:7
   }
 });
