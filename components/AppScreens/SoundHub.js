@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, ImageBackground } from 'react-native';
 import { Audio } from 'expo-av';
 import { FloatingAction } from "react-native-floating-action";
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -137,15 +137,19 @@ React.useEffect(() => {
   }
   return (
     <View style={styles.container}>
-      <View style={styles.image}>
-      <View>
-        <Text style={styles.titleText}>Your Tracks</Text>
-      </View>
+        <ImageBackground source={require('../../assets/youmusic.jpg')} style={styles.backgroundImage}>
+        <Text style = { styles.titleText }>
+        Yeeee
+        </Text>
+        </ImageBackground>
+        <View style={styles.titleContainer}>
         
+
+          </View>
         
-      </View>
-      
-      
+       
+        
+  
       <View style={styles.itemContainer}>
         {renderClips()}
       </View>
@@ -207,20 +211,22 @@ const styles = StyleSheet.create({
    
   },
 
-  image: {
+  backgroundImage: {
     alignItems: 'center',
+    marginLeft:'10%',
     width: '100%',
-    height: '40%',
-    marginTop: '70%',
+    height: '100%',
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 7
+    padding: 7,
+    opacity:0.7
   },
 
   titleText: {
     padding: 15,
     marginRight: '55%',
     fontFamily: 'Roboto',
+    position: 'absolute',
     fontSize: 25,
     color: '#ed931c',
     textShadowColor: 'rgba(255, 255, 255, 1)',
