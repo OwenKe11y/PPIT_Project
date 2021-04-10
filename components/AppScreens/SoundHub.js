@@ -1,25 +1,25 @@
-import React, { Component, useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { Audio } from 'expo-av';
 import { FloatingAction } from "react-native-floating-action";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { upload, loadClips, sendArray, clipArray } from '../../firebase/firebaseMethods';
-import * as firebase from 'firebase/app';
+import { upload, loadClips, clipArray } from '../../firebase/firebaseMethods';
 import { Image } from 'react-native-animatable';
+import { render } from 'react-dom';
 
 const actions = [
   {
     text: "Record",
     name: "bt_rec",
     position: 1,
-    color: "#9deb98",
+    color: "#ed931c",
     icon: <Ionicons name="mic-circle-outline" color="white" size={26} ></Ionicons>
   },
   {
     text: "Stop",
     name: "bt_stop",
     position: 2,
-    color: "#9deb98",
+    color: "#ed931c",
     visible: false,
     icon: <Ionicons name="stop-circle-outline" color="white" size={26}></Ionicons>
   },
@@ -27,17 +27,18 @@ const actions = [
     text: "Play",
     name: "bt_sound",
     position: 3,
-    color: "#9deb98",
+    color: "#ed931c",
     icon: <Ionicons name="volume-high-outline" color="white" size={26}></Ionicons>
   },
   {
     text: "Load Clips",
     name: "bt_loadClips",
     position: 4,
-    color: "#9deb98",
+    color: "#ed931c",
     icon: <Ionicons name="volume-high-outline" color="white" size={26}></Ionicons>
   }
 ];
+
 
 const clips = clipArray;
 
@@ -105,22 +106,37 @@ export default function SoundHubScreen({ navigation }) {
       : undefined;
   }, [sound]);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.image}>
-        <Image
-          style={{ width:'100%', height:'100%', borderBottomRightRadius:10, borderBottomLeftRadius:10}}
-          source={require('../../assets/youmusic.jpg')}
-          />
-      </View>
-
-      <View style={styles.itemList}>
+  function renderClips() {
+    if (!clips.length)
+      return <Text style={{
+        marginLeft: '25%',
+        marginTop: '40%',
+        color: 'rgba(230, 227, 227, 0.75)',
+        fontSize: 30,
+      }}>Nothing Here</Text>
+    else
+      return <View>
         <FlatList
           data={clips}
           renderItem=
-          {({ item }) => <Text>{item.link}</Text> }
+          {({ item }) => <Text style={styles.itemStyle}>{item.link}</Text>}
           keyExtractor={(item, index) => index.toString()}
         />
+      </View>
+  }
+  return (
+    <View style={styles.container}>
+      <View style={styles.image}>
+      <View>
+        <Text style={styles.titleText}>Your Tracks</Text>
+      </View>
+        
+        
+      </View>
+      
+      
+      <View style={styles.itemContainer}>
+        {renderClips()}
       </View>
 
       <FloatingAction
@@ -139,7 +155,7 @@ export default function SoundHubScreen({ navigation }) {
           }
           if (name == "bt_loadClips") {
           }
-          
+
           console.log(`selected button: ${name}`);
         }}
       />
@@ -149,24 +165,6 @@ export default function SoundHubScreen({ navigation }) {
 
 const styles = StyleSheet.create({
 
-
-  button: {
-    width: 150,
-    padding: 5,
-    backgroundColor: '#ed931c',
-    borderWidth: 2,
-    borderColor: 'white',
-    borderRadius: 15,
-    alignSelf: 'center',
-  },
-
-  buttonText: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-
   container: {
     height: '100%',
     width: '100%',
@@ -175,41 +173,48 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  text: {
-    textAlign: 'center',
-    fontSize: 20,
-    fontStyle: 'italic',
-    marginTop: '2%',
-    marginBottom: '10%',
-    fontWeight: 'bold',
-    color: 'black',
-  },
-
-  titleText: {
+  itemContainer: {
     textAlign: 'center',
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#2E6194',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    margin: 8,
+    padding: 7,
+    width:'100%',
+    height:'100%'
   },
 
-  itemList: {
+  itemStyle:{
     textAlign: 'center',
-    fontSize: 30,
+    color:'white',
     fontWeight: 'bold',
-    backgroundColor:'#fff',
-    borderRadius:10,
-    margin:8,
-    padding:7
-    
+    backgroundColor: '#ed931c',
+    borderRadius: 10,
+    margin: 8,
+    padding: 7,
+   
   },
 
-  image:{
+  image: {
     alignItems: 'center',
     width: '100%',
     height: '40%',
-    marginTop:'70%',
-    backgroundColor:'#fff',
-    borderRadius:10,
-    padding:7
-  }
+    marginTop: '70%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 7
+  },
+
+  titleText: {
+    padding: 15,
+    marginRight: '55%',
+    fontFamily: 'Roboto',
+    fontSize: 25,
+    color: '#ed931c',
+    textShadowColor: 'rgba(255, 255, 255, 1)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+
 });

@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.1.0",
     "@react-native-async-storage/async-storage": "^1.14.1",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-firebase/app": "^10.8.1",
@@ -19,8 +20,10 @@
     "@react-navigation/stack": "^5.14.3",
     "expo": "^40.0.1",
     "expo-av": "~8.7.0",
+    "expo-font": "~8.4.0",
     "expo-status-bar": "~1.0.3",
     "firebase": "^7.9.0",
+    "native-base": "^2.15.2",
     "prompt": "^1.1.0",
     "react": "16.13.1",
     "react-audio-player": "^0.14.0",
