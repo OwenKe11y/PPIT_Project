@@ -3,9 +3,7 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { Audio } from 'expo-av';
 import { FloatingAction } from "react-native-floating-action";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { upload, loadClips, clipArray } from '../../firebase/firebaseMethods';
-import { Image } from 'react-native-animatable';
-import { render } from 'react-dom';
+import { loadClips, upload , getClips} from '../../firebase/firebaseMethods';
 
 const actions = [
   {
@@ -39,17 +37,13 @@ const actions = [
   }
 ];
 
-
-const clips = clipArray;
-
-
 export default function SoundHubScreen({ navigation }) {
   const [recording, setRecording] = React.useState();
   const [sound, setSound] = React.useState();
 
-  // https://dev.to/cirlorm_io/how-to-create-a-music-streaming-app-expo-rn-1724
-  // Resource here for loading clips
-  loadClips();
+  // loading clips on app start
+  var clips = getClips();
+
   // start recording
   async function startRecording() {
     try {
@@ -70,41 +64,58 @@ export default function SoundHubScreen({ navigation }) {
     }
   }
 
-  // stop recording
-  async function stopRecording() {
-    console.log('Stopping recording..');
-    setRecording(undefined);
-    await recording.stopAndUnloadAsync();
-
-    // var option = window.prompt("Enter name of clip or 'Cancel' to delete")
-    // if (option == 'Cancel' || option == null){
-    //   Alert.alert("Clip deleted")
-    // } else {
-    const uri = recording.getURI();
-    console.log('Recording stopped and stored at', uri);
-    upload(uri);
-    //}
+ // Start recording
+ async function startRecording() {
+  try {
+    console.log('Requesting permissions..');
+    await Audio.requestPermissionsAsync();
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: true,
+      playsInSilentModeIOS: true,
+    });
+    console.log('Starting recording..');
+    const recording = new Audio.Recording();
+    await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+    await recording.startAsync();
+    setRecording(recording);
+    console.log('Recording started');
+  } catch (err) {
+    console.error('Failed to start recording', err);
   }
+}
 
-  async function playSound() {
-    console.log('Loading Sound');
-    const { sound } = await Audio.Sound.createAsync(
-      require('../../assets/sample3.mp3')
-    );
-    setSound(sound);
+// Stop recording
+async function stopRecording() {
+  console.log('Stopping recording..');
+  setRecording(undefined);
+  await recording.stopAndUnloadAsync();
 
-    console.log('Playing Sound');
-    await sound.playAsync();
-  }
+  const uri = recording.getURI();
+  console.log('Recording stopped and stored at', uri);
+  upload(uri, "Name Test");
+  //}
+}
 
-  React.useEffect(() => {
-    return sound
-      ? () => {
-        console.log('Unloading Sound');
-        sound.unloadAsync();
-      }
-      : undefined;
-  }, [sound]);
+// Play Audio
+async function playSound() {
+  console.log('Loading Sound');
+  const { sound } = await Audio.Sound.createAsync(
+    require('../../assets/sample3.mp3')
+  );
+  setSound(sound);
+
+  console.log('Playing Sound');
+  await sound.playAsync();
+}
+
+React.useEffect(() => {
+  return sound
+    ? () => {
+      console.log('Unloading Sound');
+      sound.unloadAsync();
+    }
+    : undefined;
+}, [sound]);
 
   function renderClips() {
     if (!clips.length)
@@ -119,7 +130,7 @@ export default function SoundHubScreen({ navigation }) {
         <FlatList
           data={clips}
           renderItem=
-          {({ item }) => <Text style={styles.itemStyle}>{item.link}</Text>}
+          {({ item }) => <Text style={styles.itemStyle}>{item.name}</Text>}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
@@ -145,7 +156,6 @@ export default function SoundHubScreen({ navigation }) {
         onPressItem={name => {
           if (name == "bt_rec") {
             startRecording();
-            actions[1].visible = true;
           }
           if (name == "bt_stop") {
             stopRecording();
@@ -154,6 +164,7 @@ export default function SoundHubScreen({ navigation }) {
             playSound();
           }
           if (name == "bt_loadClips") {
+            getClips();
           }
 
           console.log(`selected button: ${name}`);

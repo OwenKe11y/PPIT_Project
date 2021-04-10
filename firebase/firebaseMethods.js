@@ -1,13 +1,13 @@
+
 import * as firebase from 'firebase/app'
+import React, { setState, state } from 'react';
 import { Alert } from 'react-native';
 
 // Firebase packages
 import 'firebase/firestore';
 import 'firebase/storage';
 
-const firebaseUri = [];
-
-export const clipArray = [];
+export var soundClips = [];
 
 export async function registration(email, password, lastName, firstName) {
   try {
@@ -46,51 +46,53 @@ export async function loggingOut() {
 }
 
 // Uploads an image to firebase storage
-export async function upload(uri) {
+export async function upload(uri, name) {
   try {
     const response = await fetch(uri);
     const blob = await response.blob();
     // Create a root reference
     var storageRef = firebase.storage().ref();
-    // Create a reference to 'images/mountains.jpg'
-    var reference = storageRef.child('Clips/test1.mp3');
+    // Create a reference to clip
+    var reference = storageRef.child('Clips/' + name);
     await reference.put(blob);
     console.log("Upload Success");
-    //getDownloadURI(uri);
   } catch (err) {
     console.log("Failed file upload");
     console.log(err);
   }
 }
 
-export async function getDownloadURI(uri) {
-  try {
-    var storageRef = firebase.storage().ref();
-    var reference = storageRef.child('Clips/test1.mp3');
-    var downloadUri = await reference.getDownloadURL();
-    firebaseUri.push(downloadUri);
-    console.log(firebaseUri[0]);
-  } catch (err) {
-    console.log("Failed file download uri");
-    console.log(err);
-  }
+export async function loadClips() {
+  var obj;
+  var clipName;
+  var storageRef = firebase.storage().ref();
+  var listRef = storageRef.child('Clips/');
+
+  var tempArray = [];
+
+  listRef.listAll().then(function (result) {
+    result.items.forEach(function (clipRef) {
+      clipRef.getMetadata().then(function (metadata){
+        clipName = metadata.name;
+      });
+      clipRef.getDownloadURL().then(function (url) {
+        obj = { link: url, name: clipName}
+        tempArray.push(obj);
+        setArray(tempArray);
+      });
+    })
+    
+  }).catch(function (error) {
+    console.log(error);
+  });
 }
 
-export async function loadClips() {
-    var img_index = 1;
-    var tempArray = [];
-    var obj;
-    
-    var storageRef = firebase.storage().ref();
-    var listRef = storageRef.child('Clips/');
-    listRef.listAll().then(function (result) {
-      result.items.forEach(function (imgRef) {
-        imgRef.getDownloadURL().then(function (url) {
-          obj = {link: url}
-          clipArray.push(obj);         
-        });
-      })
-    }).catch(function (error) {
-      console.log(error);
-    });
+function setArray(array) {
+  soundClips = array;
+  
+}
+
+export function getClips() {
+  loadClips();
+  return soundClips;
 }
