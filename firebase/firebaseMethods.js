@@ -65,6 +65,7 @@ export async function upload(uri, name) {
 export async function loadClips() {
   var obj;
   var clipName;
+  var clipLink;
   var storageRef = firebase.storage().ref();
   var listRef = storageRef.child('Clips/');
 
@@ -72,16 +73,16 @@ export async function loadClips() {
 
   listRef.listAll().then(function (result) {
     result.items.forEach(function (clipRef) {
-      clipRef.getMetadata().then(function (metadata){
-        clipName = metadata.name;
-      });
       clipRef.getDownloadURL().then(function (url) {
-        obj = { link: url, name: clipName}
-        tempArray.push(obj);
-        setArray(tempArray);
+        clipRef.getMetadata().then(function (metadata){
+          clipName = metadata.name;
+          clipLink = url;
+          obj = { link: clipLink, name: clipName}
+          tempArray.push(obj);
+          setArray(tempArray);
+        });     
       });
     })
-    
   }).catch(function (error) {
     console.log(error);
   });

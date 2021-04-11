@@ -96,6 +96,17 @@ async function stopRecording() {
   //}
 }
 
+async function playClip(uri) {
+  const soundObject = new Audio.Sound();
+    try {
+      await soundObject.loadAsync({ uri });
+      await soundObject.playAsync();
+    } catch (error) {
+      console.log("error:", error);
+    }
+}
+
+
 // Play Audio
 async function playSound() {
   console.log('Loading Sound');
@@ -161,7 +172,7 @@ React.useEffect(() => {
             stopRecording();
           }
           if (name == "bt_sound") {
-            playSound();
+            playClip(clips[1].link);
           }
           if (name == "bt_loadClips") {
             getClips();
