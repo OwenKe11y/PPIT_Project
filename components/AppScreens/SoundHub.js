@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, FlatList, Image, ImageBackground } from 'react-
 import { Audio } from 'expo-av';
 import { FloatingAction } from "react-native-floating-action";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { loadClips, upload , getClips} from '../../firebase/firebaseMethods';
+import { loadClips, upload, getClips } from '../../firebase/firebaseMethods';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const actions = [
   {
@@ -64,69 +65,69 @@ export default function SoundHubScreen({ navigation }) {
     }
   }
 
- // Start recording
- async function startRecording() {
-  try {
-    console.log('Requesting permissions..');
-    await Audio.requestPermissionsAsync();
-    await Audio.setAudioModeAsync({
-      allowsRecordingIOS: true,
-      playsInSilentModeIOS: true,
-    });
-    console.log('Starting recording..');
-    const recording = new Audio.Recording();
-    await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
-    await recording.startAsync();
-    setRecording(recording);
-    console.log('Recording started');
-  } catch (err) {
-    console.error('Failed to start recording', err);
+  // Start recording
+  async function startRecording() {
+    try {
+      console.log('Requesting permissions..');
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+      console.log('Starting recording..');
+      const recording = new Audio.Recording();
+      await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+      await recording.startAsync();
+      setRecording(recording);
+      console.log('Recording started');
+    } catch (err) {
+      console.error('Failed to start recording', err);
+    }
   }
-}
 
-// Stop recording
-async function stopRecording() {
-  console.log('Stopping recording..');
-  setRecording(undefined);
-  await recording.stopAndUnloadAsync();
+  // Stop recording
+  async function stopRecording() {
+    console.log('Stopping recording..');
+    setRecording(undefined);
+    await recording.stopAndUnloadAsync();
 
-  const uri = recording.getURI();
-  console.log('Recording stopped and stored at', uri);
-  upload(uri, "Name Test");
-  //}
-}
+    const uri = recording.getURI();
+    console.log('Recording stopped and stored at', uri);
+    upload(uri, "Name Test");
+    //}
+  }
 
-async function playClip(uri) {
-  const soundObject = new Audio.Sound();
+  async function playClip(uri) {
+    const soundObject = new Audio.Sound();
     try {
       await soundObject.loadAsync({ uri });
       await soundObject.playAsync();
     } catch (error) {
       console.log("error:", error);
     }
-}
+  }
 
 
-// Play Audio
-async function playSound() {
-  console.log('Loading Sound');
-  const { sound } = await Audio.Sound.createAsync(
-    require('../../assets/sample3.mp3')
-  );
-  setSound(sound);
+  // Play Audio
+  async function playSound() {
+    console.log('Loading Sound');
+    const { sound } = await Audio.Sound.createAsync(
+      require('../../assets/sample3.mp3')
+    );
+    setSound(sound);
 
-  console.log('Playing Sound');
-  await sound.playAsync();
-}
+    console.log('Playing Sound');
+    await sound.playAsync();
+  }
 
-React.useEffect(() => {
-  return sound
-    ? () => {
-      console.log('Unloading Sound');
-      sound.unloadAsync();
-    }
-    : undefined;
-}, [sound]);
+  React.useEffect(() => {
+    return sound
+      ? () => {
+        console.log('Unloading Sound');
+        sound.unloadAsync();
+      }
+      : undefined;
+  }, [sound]);
 
   function renderClips() {
     if (!clips.length)
@@ -141,26 +142,29 @@ React.useEffect(() => {
         <FlatList
           data={clips}
           renderItem=
-          {({ item }) => <Text style={styles.itemStyle}>{item.name}</Text>}
+          {({ item }) => <TouchableOpacity style={styles.itemStyle}
+            onPress={() => playClip(item.link)}>
+            <Text>
+              {item.name}
+            </Text>
+          </TouchableOpacity>}
           keyExtractor={(item, index) => index.toString()}
+
         />
       </View>
   }
   return (
     <View style={styles.container}>
-        <ImageBackground source={require('../../assets/youmusic.jpg')} style={styles.backgroundImage}>
-        <Text style = { styles.titleText }>
-        Yeeee
+      <View style={styles.backgroundContainer}>
+        <ImageBackground source={require('../../assets/youmusic.png')} style={styles.backgroundImage}>
+          <Text style={styles.titleText}>
+            Yeeee
         </Text>
         </ImageBackground>
-        <View style={styles.titleContainer}>
-        
+      </View>
 
-          </View>
-        
-       
-        
-  
+
+
       <View style={styles.itemContainer}>
         {renderClips()}
       </View>
@@ -207,42 +211,40 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 8,
     padding: 7,
-    width:'100%',
-    height:'100%'
+    width: '100%',
+    height: '100%'
   },
 
-  itemStyle:{
+  itemStyle: {
     textAlign: 'center',
-    color:'white',
+    color: 'white',
     fontWeight: 'bold',
     backgroundColor: '#ed931c',
     borderRadius: 10,
     margin: 8,
     padding: 7,
-   
+
+  },
+
+  backgroundContainer: {
+    height: '50%',
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
   },
 
   backgroundImage: {
-    alignItems: 'center',
-    marginLeft:'10%',
-    width: '100%',
     height: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 7,
-    opacity:0.7
+    justifyContent: 'center',
+    marginBottom: 0,
+    padding: 5,
+    opacity: 0.9,
+    borderRadius: 5,
+
   },
 
   titleText: {
-    padding: 15,
-    marginRight: '55%',
-    fontFamily: 'Roboto',
-    position: 'absolute',
-    fontSize: 25,
-    color: '#ed931c',
-    textShadowColor: 'rgba(255, 255, 255, 1)',
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
+    marginBottom: 0
   },
 
 });
