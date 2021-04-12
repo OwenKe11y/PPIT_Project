@@ -8,6 +8,7 @@ import 'firebase/firestore';
 import 'firebase/storage';
 
 export var soundClips = [];
+export var noteClips = [];
 
 export async function registration(email, password, lastName, firstName) {
   try {
@@ -45,6 +46,10 @@ export async function loggingOut() {
   }
 }
 
+//
+// SoundHub
+//
+
 // Uploads an image to firebase storage
 export async function upload(uri, name) {
   try {
@@ -74,13 +79,14 @@ export async function loadClips() {
   listRef.listAll().then(function (result) {
     result.items.forEach(function (clipRef) {
       clipRef.getDownloadURL().then(function (url) {
-        clipRef.getMetadata().then(function (metadata){
+        clipRef.getMetadata().then(function (metadata) {
           clipName = metadata.name;
           clipLink = url;
-          obj = { link: clipLink, name: clipName}
+          obj = { link: clipLink, name: clipName }
           tempArray.push(obj);
-          setArray(tempArray);
-        });     
+          soundClips = tempArray;
+          
+        });
       });
     })
   }).catch(function (error) {
@@ -88,12 +94,61 @@ export async function loadClips() {
   });
 }
 
-function setArray(array) {
-  soundClips = array;
+export function getClips() {
+  loadClips();
+  // Sort clips alphabetically before returning
+  soundClips.sort(function (a, b) {
+    if (a.name < b.name) { return -1; }
+    if (a.name > b.name) { return 1; }
+    return 0;
+  })
+
+  return soundClips;
+}
+
+//
+// Tuner
+//
+
+export async function loadNotes() {
+  var obj;
+  var noteName;
+  var noteUri;
+  var storageRef = firebase.storage().ref();
+  var listRef = storageRef.child('Notes/');
+
+  var tempArray = [];
+
+  listRef.listAll().then(function (result) {
+    result.items.forEach(function (clipRef) {
+      clipRef.getDownloadURL().then(function (url) {
+        clipRef.getMetadata().then(function (metadata) {
+          noteName = metadata.name;
+          noteUri = url;
+          obj = { note: noteName, uri: noteUri}
+          tempArray.push(obj);
+          setArray(tempArray);
+        });
+      });
+    })
+  }).catch(function (error) {
+    console.log(error);
+  });
+}
+
+function setArray(temp) {
+  noteClips = temp;
   
 }
 
-export function getClips() {
-  loadClips();
-  return soundClips;
+export function getNotes() {
+  loadNotes();
+  // Sort notes alphabetically before returning
+  noteClips.sort(function (a, b) {
+    if (a.note < b.note) { return -1; }
+    if (a.note > b.note) { return 1; }
+    return 0;
+  })
+
+  return noteClips;
 }

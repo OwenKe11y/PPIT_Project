@@ -42,28 +42,10 @@ export default function SoundHubScreen({ navigation }) {
   const [recording, setRecording] = React.useState();
   const [sound, setSound] = React.useState();
 
+  const soundObject = new Audio.Sound();
+
   // loading clips on app start
   var clips = getClips();
-
-  // start recording
-  async function startRecording() {
-    try {
-      console.log('Requesting permissions..');
-      await Audio.requestPermissionsAsync();
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
-      console.log('Starting recording..');
-      const recording = new Audio.Recording();
-      await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
-      await recording.startAsync();
-      setRecording(recording);
-      console.log('Recording started');
-    } catch (err) {
-      console.error('Failed to start recording', err);
-    }
-  }
 
   // Start recording
   async function startRecording() {
@@ -97,11 +79,15 @@ export default function SoundHubScreen({ navigation }) {
     //}
   }
 
+  // Play Clip
   async function playClip(uri) {
-    const soundObject = new Audio.Sound();
     try {
       await soundObject.loadAsync({ uri });
-      await soundObject.playAsync();
+      if (uri == "pause") {
+        await soundObject.unloadAsync();
+      } else {
+        await soundObject.playAsync();
+      }
     } catch (error) {
       console.log("error:", error);
     }
@@ -112,7 +98,7 @@ export default function SoundHubScreen({ navigation }) {
   async function playSound() {
     console.log('Loading Sound');
     const { sound } = await Audio.Sound.createAsync(
-      require('../../assets/sample3.mp3')
+      require('../../assets/loadClip.mp3')
     );
     setSound(sound);
 
@@ -131,12 +117,18 @@ export default function SoundHubScreen({ navigation }) {
 
   function renderClips() {
     if (!clips.length)
-      return <Text style={{
-        marginLeft: '25%',
-        marginTop: '40%',
-        color: 'rgba(230, 227, 227, 0.75)',
-        fontSize: 30,
-      }}>Nothing Here</Text>
+      return <TouchableOpacity onPress={() => playSound()}>
+        <Text style={{
+          textAlign: 'center',
+          color: 'white',
+          fontWeight: 'bold',
+          backgroundColor: '#ed931c',
+          borderRadius: 10,
+          margin: 8,
+          padding: 7,
+        }}>Load Clips
+      </Text>
+      </TouchableOpacity>
     else
       return <View>
         <FlatList
@@ -156,14 +148,8 @@ export default function SoundHubScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.backgroundContainer}>
-        <ImageBackground source={require('../../assets/youmusic.png')} style={styles.backgroundImage}>
-          <Text style={styles.titleText}>
-            Yeeee
-        </Text>
-        </ImageBackground>
+        <ImageBackground source={require('../../assets/youmusic.png')} style={styles.backgroundImage}/>
       </View>
-
-
 
       <View style={styles.itemContainer}>
         {renderClips()}
@@ -184,6 +170,7 @@ export default function SoundHubScreen({ navigation }) {
           }
           if (name == "bt_loadClips") {
             getClips();
+            playSound();
           }
 
           console.log(`selected button: ${name}`);
