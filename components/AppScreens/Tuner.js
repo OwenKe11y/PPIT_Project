@@ -3,17 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground} from 
 import { Audio } from 'expo-av';
 import { getNotes } from '../../firebase/firebaseMethods';
 
-const soundObject = new Audio.Sound()
-
-function Notes() {
-
-  useEffect(() => {
-    var noteClips = getNotes();
-  });
-}
+const soundObject = new Audio.Sound();
 
 export default function TunerScreen({ navigation }) {
-  
+  var noteClips = getNotes();
   
 
   async function playSound(uri) {
@@ -74,7 +67,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderRadius: 20,
     marginLeft:'51%',
-    marginTop:'27%'
+    marginTop:'25%'
   },
   button2: {
     width: 50,
@@ -114,7 +107,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderRadius: 20,
     marginLeft:'28%',
-    marginTop:'7%'
+    marginTop:'5%'
   },
   button6: {
     width: 50,
@@ -124,7 +117,6 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderRadius: 20,
     marginLeft:'22%',
-    marginTop:'0.01%'
   },
   buttonFunc: {
     width: 120,

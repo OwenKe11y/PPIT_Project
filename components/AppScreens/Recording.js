@@ -4,45 +4,47 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as firebase from 'firebase';
 import {loggingOut} from '../../firebase/firebaseMethods';
 
-export default function HomeScreen({ navigation }) {
-  let currentUserUID = firebase.auth().currentUser.uid;
-  const [firstName, setFirstName] = useState('');
+export default function RecordingScreen({ navigation }) {
 
-  useEffect(() => {
-    async function getUserInfo(){
-      try {
-        let doc = await firebase
-          .firestore()
-          .collection('users')
-          .doc(currentUserUID)
-          .get();
 
-        if (!doc.exists){
-          Alert.alert('No user data found!')
-        } else {
-          let dataObj = doc.data();
-          setFirstName(dataObj.firstName)
-        }
-      } catch (err){
-      Alert.alert('There is an error.', err.message)
-      }
+
+
+  
+   // Start recording
+   async function startRecording() {
+    try {
+      console.log('Requesting permissions..');
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+      console.log('Starting recording..');
+      const recording = new Audio.Recording();
+      await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+      await recording.startAsync();
+      setRecording(recording);
+      console.log('Recording started');
+    } catch (err) {
+      console.error('Failed to start recording', err);
     }
-    getUserInfo();
-  })
+  }
 
-  const handlePress = () => {
-    loggingOut();
-    navigation.replace('Welcome');
-  };
+  // Stop recording
+  async function stopRecording() {
+    console.log('Stopping recording..');
+    setRecording(undefined);
+    await recording.stopAndUnloadAsync();
+
+    const uri = recording.getURI();
+    console.log('Recording stopped and stored at', uri);
+    upload(uri, "Name Test");
+    //}
+  }
+
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titleText}>Dashboard</Text>
-      <Text style={styles.text}>Hi {firstName}</Text>
- 
-      <TouchableOpacity style={styles.button} onPress={handlePress}>
-        <Text style={styles.buttonText}>Log Out</Text>
-      </TouchableOpacity>
     </View>
   )
 }

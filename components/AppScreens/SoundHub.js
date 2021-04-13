@@ -1,44 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, ImageBackground } from 'react-native';
 import { Audio } from 'expo-av';
 import { FloatingAction } from "react-native-floating-action";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { loadClips, upload, getClips } from '../../firebase/firebaseMethods';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import * as firebase from 'firebase';
 
 const actions = [
   {
-    text: "Record",
+    text: "New Recording",
     name: "bt_rec",
     position: 1,
     color: "#ed931c",
     icon: <Ionicons name="mic-circle-outline" color="white" size={26} ></Ionicons>
   },
-  {
-    text: "Stop",
-    name: "bt_stop",
-    position: 2,
-    color: "#ed931c",
-    visible: false,
-    icon: <Ionicons name="stop-circle-outline" color="white" size={26}></Ionicons>
-  },
-  {
-    text: "Play",
-    name: "bt_sound",
-    position: 3,
-    color: "#ed931c",
-    icon: <Ionicons name="volume-high-outline" color="white" size={26}></Ionicons>
-  },
-  {
-    text: "Load Clips",
-    name: "bt_loadClips",
-    position: 4,
-    color: "#ed931c",
-    icon: <Ionicons name="volume-high-outline" color="white" size={26}></Ionicons>
-  }
 ];
 
 export default function SoundHubScreen({ navigation }) {
+
+  let currentUserUID = firebase.auth().currentUser.uid;
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+
+  useEffect(() => {
+    async function getUserInfo(){
+      try {
+        let doc = await firebase
+          .firestore()
+          .collection('users')
+          .doc(currentUserUID)
+          .get();
+
+        if (!doc.exists){
+          Alert.alert('No user data found!')
+        } else {
+          let dataObj = doc.data();
+          setFirstName(dataObj.firstName)
+          setLastName(dataObj.lastName)
+        }
+      } catch (err){
+      Alert.alert('There is an error.', err.message)
+      }
+    }
+    getUserInfo();
+  })
+
+
   const [recording, setRecording] = React.useState();
   const [sound, setSound] = React.useState();
 
@@ -47,37 +55,7 @@ export default function SoundHubScreen({ navigation }) {
   // loading clips on app start
   var clips = getClips();
 
-  // Start recording
-  async function startRecording() {
-    try {
-      console.log('Requesting permissions..');
-      await Audio.requestPermissionsAsync();
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
-      console.log('Starting recording..');
-      const recording = new Audio.Recording();
-      await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
-      await recording.startAsync();
-      setRecording(recording);
-      console.log('Recording started');
-    } catch (err) {
-      console.error('Failed to start recording', err);
-    }
-  }
 
-  // Stop recording
-  async function stopRecording() {
-    console.log('Stopping recording..');
-    setRecording(undefined);
-    await recording.stopAndUnloadAsync();
-
-    const uri = recording.getURI();
-    console.log('Recording stopped and stored at', uri);
-    upload(uri, "Name Test");
-    //}
-  }
 
   // Play Clip
   async function playClip(uri) {
@@ -120,11 +98,8 @@ export default function SoundHubScreen({ navigation }) {
       return <TouchableOpacity onPress={() => playSound()}>
         <Text style={{
           textAlign: 'center',
-          color: 'white',
-          fontWeight: 'bold',
           backgroundColor: '#ed931c',
           borderRadius: 10,
-          margin: 8,
           padding: 7,
         }}>Load Clips
       </Text>
@@ -136,9 +111,17 @@ export default function SoundHubScreen({ navigation }) {
           renderItem=
           {({ item }) => <TouchableOpacity style={styles.itemStyle}
             onPress={() => playClip(item.link)}>
-            <Text>
-              {item.name}
-            </Text>
+            <View style={{ }}>
+              <Text style={{ marginLeft: '25%',fontSize:25, color:'#fff'}}>
+                {item.name}
+              </Text>
+              <Text style={{ marginLeft: '28%',fontSize:15, color:'#e6e3e3'}}>
+                By - {firstName + '' + lastName}
+              </Text>
+              <Ionicons name={'disc'} size={80} color={'white'} style={{marginTop:-60}} />
+              <Ionicons name={'play'} size={40} color={'white'} style={{marginTop:-50, marginLeft:'87%'}} />
+            </View>
+
           </TouchableOpacity>}
           keyExtractor={(item, index) => index.toString()}
 
@@ -148,7 +131,7 @@ export default function SoundHubScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.backgroundContainer}>
-        <ImageBackground source={require('../../assets/youmusic.png')} style={styles.backgroundImage}/>
+        <ImageBackground source={require('../../assets/youmusic.png')} style={styles.backgroundImage} />
       </View>
 
       <View style={styles.itemContainer}>
@@ -156,23 +139,13 @@ export default function SoundHubScreen({ navigation }) {
       </View>
 
       <FloatingAction
-        color='#ed931c'
+        color='#fff'
         actions={actions}
+        floatingIcon={require('../../assets/add.png')}
         onPressItem={name => {
           if (name == "bt_rec") {
-            startRecording();
+            navigation.navigate('Recording')
           }
-          if (name == "bt_stop") {
-            stopRecording();
-          }
-          if (name == "bt_sound") {
-            playClip(clips[1].link);
-          }
-          if (name == "bt_loadClips") {
-            getClips();
-            playSound();
-          }
-
           console.log(`selected button: ${name}`);
         }}
       />

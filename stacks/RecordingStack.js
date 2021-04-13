@@ -2,17 +2,17 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../components/AppScreens/Home';
+import RecordingScreen from '../components/AppScreens/Recording';
 
-const HomePage = createStackNavigator();
+const RecordingPage = createStackNavigator();
 
-export default function HomeStack() {
+export default function RecordingStack() {
   return (
-    <HomePage.Navigator>
-      <HomePage.Screen name="Home"
-        component={HomeScreen}
+    <RecordingPage.Navigator>
+      <RecordingPage.Screen name="Recording"
+        component={RecordingScreen}
         options={{
-          title: 'Home',
+          title: 'Recording',
           headerTitleAlign: 'center',
           headerLeft: null,
           headerStyle: {
@@ -25,7 +25,7 @@ export default function HomeStack() {
           },
         }}
       />
-    </HomePage.Navigator>
+    </RecordingPage.Navigator>
   );
 }
 

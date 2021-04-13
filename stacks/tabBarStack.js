@@ -1,13 +1,14 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import HomeStack from './homeStack';
-import SoundHubStack from './soundHubStack'
+import RecordingStack from './RecordingStack';
+import SoundHubStack from './soundHubStack';
+import TunerStack from './tunerStack';
 
 const Tab = createMaterialTopTabNavigator();
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import TunerStack from './tunerStack';
+
 
 export default function MyTabsBar() {
   return (
@@ -17,10 +18,10 @@ export default function MyTabsBar() {
             let iconName;
             size = 20;
             // This is just so the icons change colour and appearance when pressed
-            if (route.name === 'Home') {
+            if (route.name === 'Recording') {
               iconName = focused
-                ? 'home'
-                : 'home-outline';
+                ? 'mic'
+                : 'mic-outline';
             } else if (route.name == 'SoundHub'){
                 iconName = focused
                 ? 'disc'
@@ -45,11 +46,12 @@ export default function MyTabsBar() {
             borderRadius: 15,
             marginBottom: 8,
             marginLeft: 12,
-            width: '45%'
+            width: '27%'
         },
         }}>
-            
+      
       <Tab.Screen name="SoundHub" component={SoundHubStack} />
+      <Tab.Screen name="Recording" component={RecordingStack} />
       <Tab.Screen name="Tuner" component={TunerStack}/>
     </Tab.Navigator>
   );

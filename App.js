@@ -28,7 +28,7 @@ export default function App() {
       <Stack.Screen name='Welcome' component={WelcomeScreen} options={{ headerShown: false }}/>
       <Stack.Screen name='Sign Up' component={SignUp}/>
       <Stack.Screen name='Sign In' component={SignIn}/>
-      <Stack.Screen name={'Home'} component={MyTabsBar} options={{ headerShown: false }} />
+      <Stack.Screen name={'SoundHub'} component={MyTabsBar} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
