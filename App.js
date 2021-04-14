@@ -10,6 +10,7 @@ import LoadingScreen from './components/Welcome/LoadingScreen';
 
 import { LogBox } from 'react-native';
 import MyTabsBar from './stacks/tabBarStack';
+import RecordingStartStack from './stacks/RecordStart'
 
 LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 
@@ -29,6 +30,7 @@ export default function App() {
       <Stack.Screen name='Sign Up' component={SignUp}/>
       <Stack.Screen name='Sign In' component={SignIn}/>
       <Stack.Screen name={'SoundHub'} component={MyTabsBar} options={{ headerShown: false }} />
+      <Stack.Screen name={'Record'} component={RecordingStartStack} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

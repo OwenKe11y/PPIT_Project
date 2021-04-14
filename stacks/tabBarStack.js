@@ -35,6 +35,7 @@ export default function MyTabsBar() {
             return <Ionicons name={iconName} size={size} color={color} />;
           },
         })}
+        
         tabBarPosition={'bottom'}
         tabBarOptions={{
           activeTintColor: '#fff',
@@ -48,6 +49,7 @@ export default function MyTabsBar() {
             marginLeft: 12,
             width: '27%'
         },
+        
         }}>
       
       <Tab.Screen name="SoundHub" component={SoundHubStack} />

@@ -8,11 +8,15 @@ const soundObject = new Audio.Sound();
 export default function TunerScreen({ navigation }) {
   var noteClips = getNotes();
   
+  useEffect(() => {  console.log("Loaded Clips")
+  getNotes();
+});
+
 
   async function playSound(uri) {
+    console.log(uri)
     if (uri != "stop") {
       try {
-        Notes()
         await soundObject.loadAsync({ uri });
         await soundObject.playAsync();
       } catch (error) {
@@ -50,7 +54,7 @@ export default function TunerScreen({ navigation }) {
       <TouchableOpacity style={styles.buttonFunc} onPress={() => playSound("stop")}>
         <Text style={styles.buttonText}>Stop</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonFunc} onPress={() => getNotes()}>
+      <TouchableOpacity style={styles.buttonFunc} onPress={() => noteClips = getNotes()}>
         <Text style={styles.buttonText}>Load</Text>
       </TouchableOpacity>
       </ImageBackground>

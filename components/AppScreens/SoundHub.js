@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, ImageBackground, Alert} from 'react-native';
 import { Audio } from 'expo-av';
 import { FloatingAction } from "react-native-floating-action";
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -22,6 +22,9 @@ export default function SoundHubScreen({ navigation }) {
   let currentUserUID = firebase.auth().currentUser.uid;
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [sound, setSound] = React.useState();
+
+  const soundObject = new Audio.Sound();
 
   useEffect(() => {
     async function getUserInfo(){
@@ -47,10 +50,7 @@ export default function SoundHubScreen({ navigation }) {
   })
 
 
-  const [recording, setRecording] = React.useState();
-  const [sound, setSound] = React.useState();
-
-  const soundObject = new Audio.Sound();
+  
 
   // loading clips on app start
   var clips = getClips();
@@ -59,6 +59,7 @@ export default function SoundHubScreen({ navigation }) {
 
   // Play Clip
   async function playClip(uri) {
+    await soundObject.unloadAsync();
     try {
       await soundObject.loadAsync({ uri });
       if (uri == "pause") {
@@ -107,15 +108,16 @@ export default function SoundHubScreen({ navigation }) {
     else
       return <View>
         <FlatList
+          contentContainerStyle={{ paddingBottom: 210 }}
           data={clips}
           renderItem=
           {({ item }) => <TouchableOpacity style={styles.itemStyle}
             onPress={() => playClip(item.link)}>
-            <View style={{ }}>
+            <View style={{ paddingBottom: 10, height:'10%', flex:1 }}>
               <Text style={{ marginLeft: '25%',fontSize:25, color:'#fff'}}>
                 {item.name}
               </Text>
-              <Text style={{ marginLeft: '28%',fontSize:15, color:'#e6e3e3'}}>
+              <Text style={{ marginLeft: '28%', fontSize:15, color:'#e6e3e3'}}>
                 By - {firstName + '' + lastName}
               </Text>
               <Ionicons name={'disc'} size={80} color={'white'} style={{marginTop:-60}} />
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
     margin: 8,
     padding: 7,
     width: '100%',
-    height: '100%'
+    height: '110%'
   },
 
   itemStyle: {
