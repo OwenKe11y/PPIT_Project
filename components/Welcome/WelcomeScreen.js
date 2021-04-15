@@ -1,7 +1,8 @@
-import { ImageBackground, StyleSheet, View, Text, Pressable } from 'react-native';
+import { ImageBackground, StyleSheet, View, Text, Image } from 'react-native';
 import React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as firebase from 'firebase';
+
 
 export default function WelcomeScreen({ navigation }) {
   return (
@@ -10,6 +11,7 @@ export default function WelcomeScreen({ navigation }) {
       source={require('../../assets/background.jpg')}>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Welcome to your Music App</Text>
+        <Image source={require('../../assets/waveform.gif')} style={styles.waveform}></Image>
       </View>
       {/* Button for uploading test */}
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Sign Up')} >
@@ -31,7 +33,6 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 200,
-
     borderWidth: 2,
     borderColor: 'white',
     backgroundColor: '#4D2973',
@@ -56,10 +57,18 @@ const styles = StyleSheet.create({
     fontSize: 35,
     fontWeight: 'bold',
     color: 'white',
-    textAlign: 'center'
+    textAlign: 'center',
+    margin:10
   },
   titleContainer: {
     position: 'absolute',
     top: 170,
   },
+
+  waveform: {
+    marginTop: '85%',
+    height: '10%',
+    width: '100%',
+
+  }
 });
