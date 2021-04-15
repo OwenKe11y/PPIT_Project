@@ -1,69 +1,75 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Alert, Image, ScrollView, Keyboard, SafeAreaView, TextInput, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, Keyboard, ScrollView, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import * as firebase from 'firebase';
-import { loggingOut } from '../../firebase/firebaseMethods';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Audio } from 'expo-av';
-import { loadClips, upload, getClips } from '../../firebase/firebaseMethods';
-import playSound from '../AppScreens/SoundHub';
+import { upload } from '../../firebase/firebaseMethods';
+import { firstNameUpload, lastNameUpload } from '../AppScreens/SoundHub';
 
 var recordOption = 0
+var recordingUri;
+
 export default function RecordingScreen({ navigation }) {
   const [recording, setRecording] = React.useState();
   const [view, setView] = React.useState(0);
   const [sound, setSound] = React.useState();
+  const [name, setName] = useState('');
+  const [desc, setDesc] = useState('');
 
   useEffect(() => {
     recordOption = view;
   });
 
-
-
-// Play Audio
-async function playNope() {
-  console.log('Loading Sound');
-  const { sound } = await Audio.Sound.createAsync(
-    require('../../assets/Nope.mp3')
-  );
-  setSound(sound);
-
-  console.log('Playing Sound');
-  await sound.playAsync();
-}
-
-React.useEffect(() => {
-  return sound
-    ? () => {
-      console.log('Unloading Sound');
-      sound.unloadAsync();
+  const handlePress = () => {
+    if (!name || !desc) {
+      Alert.alert('All fields are required.');
+    } else {
+      upload(recordingUri, desc, firstNameUpload, lastNameUpload, name);
+      playSound();
     }
-    : undefined;
-}, [sound]);
+  }
 
-// Play Audio
-async function playSound() {
-  console.log('Loading Sound');
-  const { sound } = await Audio.Sound.createAsync(
-    require('../../assets/loadClip.mp3')
-  );
-  setSound(sound);
+  // Play Audio
+  async function playNope() {
+    console.log('Loading Sound');
+    const { sound } = await Audio.Sound.createAsync(
+      require('../../assets/Nope.mp3')
+    );
+    setSound(sound);
 
-  console.log('Playing Sound');
-  await sound.playAsync();
-}
+    console.log('Playing Sound');
+    await sound.playAsync();
+  }
 
-React.useEffect(() => {
-  return sound
-    ? () => {
-      console.log('Unloading Sound');
-      sound.unloadAsync();
-    }
-    : undefined;
-}, [sound]);
+  React.useEffect(() => {
+    return sound
+      ? () => {
+        console.log('Unloading Sound');
+        sound.unloadAsync();
+      }
+      : undefined;
+  }, [sound]);
 
+  // Play Audio
+  async function playSound() {
+    console.log('Loading Sound');
+    const { sound } = await Audio.Sound.createAsync(
+      require('../../assets/loadClip.mp3')
+    );
+    setSound(sound);
 
+    console.log('Playing Sound');
+    await sound.playAsync();
+  }
 
+  React.useEffect(() => {
+    return sound
+      ? () => {
+        console.log('Unloading Sound');
+        sound.unloadAsync();
+      }
+      : undefined;
+  }, [sound]);
 
   // Start recording
   async function startRecording() {
@@ -87,65 +93,61 @@ React.useEffect(() => {
 
   }
 
-
   // Stop recording
   async function stopRecording() {
     console.log('Stopping recording..');
     setRecording(undefined);
     await recording.stopAndUnloadAsync();
 
-    const uri = recording.getURI();
-    console.log('Recording stopped and stored at', uri);
-    upload(uri, "Name Test");
-    //}
+    recordingUri = recording.getURI();
+    console.log('Recording stopped and stored at', recordingUri);
   }
+
   function renderRecord(recordOption) {
 
     if (recordOption == 0) {
-      console.log(recordOption)
       return <TouchableOpacity onPress={() => setView(1)}>
         <Ionicons name={'play'} size={200} color={'#ed931c'} style={{ justifyContent: 'center' }} onPress={() => startRecording()}></Ionicons>
       </TouchableOpacity>
 
     }
     if (recordOption == 1) {
-      console.log("stop button")
       return <TouchableOpacity onPress={() => setView(2)}>
-        <Image source={require('../../assets/waveform.gif')} style={styles.waveform}></Image>
         <Ionicons name={'stop'} size={200} color={'#ed931c'} style={{ justifyContent: 'center' }} onPress={() => stopRecording()}></Ionicons>
       </TouchableOpacity>
     }
     if (recordOption == 2) {
       return <View style={styles.containerRecord}>
-      <Text style={styles.textTitle}>New Recording</Text>
+        <Text style={styles.textTitle}>New Recording</Text>
 
+        <ScrollView onBlur={Keyboard.dismiss}>
+          <Text style={styles.text}>Recording Name</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Name of Track"
+            value={name}
+            onChangeText={(name) => setName(name)}
+            autoCapitalize="none"
+          />
+          <Text style={styles.text}>Recording Description</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Description"
+            value={desc}
+            onChangeText={(desc) => setDesc(desc)}
+            autoCapitalize="none"
+          />
+          <View style={styles.containerButtons}>
+            <TouchableOpacity style={styles.button2} onPress={() => setView(0)}>
+              <Text style={styles.buttonText} onPress={() => handlePress()}>Confirm</Text>
+            </TouchableOpacity>
 
-      <ScrollView>
-      <Text style={styles.text}>Recording Name</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Name of Track"
-
-        />
-      <Text style={styles.text}>Recording Description</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Description"
-
-        />
-
-        <View style={styles.containerButtons}>
-        <TouchableOpacity style={styles.button} onPress={() => setView(0)}>
-          <Text style={styles.buttonText} onPress={() => playNope()}>Cancel</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button2} onPress={() => setView(0)}>
-          <Text style={styles.buttonText} onPress={() => playSound()}>Confirm</Text>
-        </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </View>
-    
+            <TouchableOpacity style={styles.button2} onPress={() => setView(0)}>
+              <Text style={styles.buttonText} onPress={() => playNope()}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </View>
     }
     console.log("End render function")
   }
@@ -156,7 +158,6 @@ React.useEffect(() => {
       <View style={styles.containerRecord}>
         {console.log("Console: " + recordOption)}
         {renderRecord(recordOption)}
-        {/*  */}
       </View>
     </View>
   )
@@ -181,11 +182,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10
   },
-  
-  containerButtons:{
+
+  containerButtons: {
     flexDirection: "row",
-    justifyContent:'center',
-    marginTop:'20%'
+    justifyContent: 'center',
+    marginTop: '20%'
   },
 
   button: {
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     borderColor: 'white',
     borderRadius: 20,
- 
+
   },
 
   button2: {
@@ -212,19 +213,19 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
-   
+
   },
 
   textTitle: {
-    color:'#ed931c',
-    marginTop:5,
-    marginBottom:'20%',
-    fontSize:40
+    color: '#ed931c',
+    marginTop: 5,
+    marginBottom: '20%',
+    fontSize: 40
   },
 
   text: {
-    color:'#ed931c',
-    fontSize:20
+    color: '#ed931c',
+    fontSize: 20
   },
 
   textInput: {
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
     borderColor: '#ed931c',
     padding: 10,
     margin: 5,
-    
+
   },
 
   waveform: {

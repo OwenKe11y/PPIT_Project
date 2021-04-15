@@ -10,8 +10,7 @@ export default function TunerScreen({ navigation }) {
   
   useEffect(() => {  console.log("Loaded Clips")
   getNotes();
-});
-
+  });
 
   async function playSound(uri) {
     console.log(uri)

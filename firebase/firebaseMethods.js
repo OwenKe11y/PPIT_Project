@@ -1,14 +1,16 @@
-
 import * as firebase from 'firebase/app'
-import React, { setState, state } from 'react';
 import { Alert } from 'react-native';
 
 // Firebase packages
 import 'firebase/firestore';
 import 'firebase/storage';
+import { firstNameUpload, lastNameUpload } from '../components/AppScreens/SoundHub';
 
 export var soundClips = [];
 export var noteClips = [];
+
+var fName = firstNameUpload;
+var lName = lastNameUpload;
 
 export async function registration(email, password, lastName, firstName) {
   try {
@@ -51,15 +53,24 @@ export async function loggingOut() {
 //
 
 // Uploads an image to firebase storage
-export async function upload(uri, name) {
+export async function upload(uri, desc, firstName, lastName, clipName) {
   try {
     const response = await fetch(uri);
     const blob = await response.blob();
     // Create a root reference
     var storageRef = firebase.storage().ref();
     // Create a reference to clip
-    var reference = storageRef.child('Clips/' + name);
-    await reference.put(blob);
+    var reference = storageRef.child('Clips/' + clipName);
+
+    var metadata = {
+      customMetadata: {
+        firstName: firstName,
+        lastName: lastName,
+        desc: desc
+      }
+    };
+
+    await reference.put(blob, metadata);
     console.log("Upload Success");
   } catch (err) {
     console.log("Failed file upload");
@@ -71,6 +82,9 @@ export async function loadClips() {
   var obj;
   var clipName;
   var clipLink;
+  var clipDesc;
+  var tempFirstName;
+  var tempLastName;
   var storageRef = firebase.storage().ref();
   var listRef = storageRef.child('Clips/');
 
@@ -82,10 +96,14 @@ export async function loadClips() {
         clipRef.getMetadata().then(function (metadata) {
           clipName = metadata.name;
           clipLink = url;
-          obj = { link: clipLink, name: clipName }
-          tempArray.push(obj);
-          soundClips = tempArray;
-          
+          clipDesc = metadata.customMetadata.desc;
+          tempFirstName = metadata.customMetadata.firstName;
+          tempLastName = metadata.customMetadata.lastName;
+          obj = { link: clipLink, name: clipName, firstName: tempFirstName, lastName: tempLastName, desc: clipDesc}
+          if (tempFirstName == fName && tempLastName == lName) {
+            tempArray.push(obj);
+            soundClips = tempArray;
+          }       
         });
       });
     })
