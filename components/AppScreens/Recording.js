@@ -1,20 +1,68 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Alert, Image, ScrollView, Keyboard, SafeAreaView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Alert, Image, ScrollView, Keyboard, SafeAreaView, TextInput, KeyboardAvoidingView } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as firebase from 'firebase';
 import { loggingOut } from '../../firebase/firebaseMethods';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Audio } from 'expo-av';
 import { loadClips, upload, getClips } from '../../firebase/firebaseMethods';
+import playSound from '../AppScreens/SoundHub';
 
 var recordOption = 0
 export default function RecordingScreen({ navigation }) {
   const [recording, setRecording] = React.useState();
   const [view, setView] = React.useState(0);
+  const [sound, setSound] = React.useState();
 
   useEffect(() => {
     recordOption = view;
   });
+
+
+
+// Play Audio
+async function playNope() {
+  console.log('Loading Sound');
+  const { sound } = await Audio.Sound.createAsync(
+    require('../../assets/Nope.mp3')
+  );
+  setSound(sound);
+
+  console.log('Playing Sound');
+  await sound.playAsync();
+}
+
+React.useEffect(() => {
+  return sound
+    ? () => {
+      console.log('Unloading Sound');
+      sound.unloadAsync();
+    }
+    : undefined;
+}, [sound]);
+
+// Play Audio
+async function playSound() {
+  console.log('Loading Sound');
+  const { sound } = await Audio.Sound.createAsync(
+    require('../../assets/loadClip.mp3')
+  );
+  setSound(sound);
+
+  console.log('Playing Sound');
+  await sound.playAsync();
+}
+
+React.useEffect(() => {
+  return sound
+    ? () => {
+      console.log('Unloading Sound');
+      sound.unloadAsync();
+    }
+    : undefined;
+}, [sound]);
+
+
 
 
   // Start recording
@@ -63,37 +111,41 @@ export default function RecordingScreen({ navigation }) {
     if (recordOption == 1) {
       console.log("stop button")
       return <TouchableOpacity onPress={() => setView(2)}>
+        <Image source={require('../../assets/waveform.gif')} style={styles.waveform}></Image>
         <Ionicons name={'stop'} size={200} color={'#ed931c'} style={{ justifyContent: 'center' }} onPress={() => stopRecording()}></Ionicons>
       </TouchableOpacity>
     }
     if (recordOption == 2) {
-      return <SafeAreaView>
-        <View style={styles.containerRecord}>
-          <Text style={styles.text}></Text>
+      return <View style={styles.containerRecord}>
+      <Text style={styles.textTitle}>New Recording</Text>
 
-          <ScrollView onBlur={Keyboard.dismiss}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Name of Track"
 
-            />
-            <TextInput
-              style={styles.textInput}
-              placeholder="Description"
+      <ScrollView>
+      <Text style={styles.text}>Recording Name</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Name of Track"
 
-            />
+        />
+      <Text style={styles.text}>Recording Description</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Description"
 
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Confirm</Text>
-            </TouchableOpacity>
+        />
 
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
+        <View style={styles.containerButtons}>
+        <TouchableOpacity style={styles.button} onPress={() => setView(0)}>
+          <Text style={styles.buttonText} onPress={() => playNope()}>Cancel</Text>
+        </TouchableOpacity>
 
-          </ScrollView>
+        <TouchableOpacity style={styles.button2} onPress={() => setView(0)}>
+          <Text style={styles.buttonText} onPress={() => playSound()}>Confirm</Text>
+        </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </ScrollView>
+    </View>
+    
     }
     console.log("End render function")
   }
@@ -129,39 +181,66 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10
   },
+  
+  containerButtons:{
+    flexDirection: "row",
+    justifyContent:'center',
+    marginTop:'20%'
+  },
+
+  button: {
+    width: 130,
+    padding: 5,
+    backgroundColor: '#e6e3e3',
+    borderWidth: 5,
+    borderColor: 'white',
+    borderRadius: 20,
+ 
+  },
+
+  button2: {
+    width: 130,
+    padding: 5,
+    backgroundColor: '#ed931c',
+    borderWidth: 5,
+    borderColor: 'white',
+    borderRadius: 20,
+  },
+
+  buttonText: {
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+   
+  },
+
+  textTitle: {
+    color:'#ed931c',
+    marginTop:5,
+    marginBottom:'20%',
+    fontSize:40
+  },
+
+  text: {
+    color:'#ed931c',
+    fontSize:20
+  },
+
+  textInput: {
+    width: 300,
+    fontSize: 18,
+    borderWidth: 1,
+    borderColor: '#ed931c',
+    padding: 10,
+    margin: 5,
+    
+  },
+
   waveform: {
     marginBottom: '90%',
     height: '10%',
     width: '100%',
 
-  },
-  textInput: {
-    width: 300,
-    fontSize: 18,
-    borderWidth: 1,
-    borderColor: '#a4eddf',
-    padding: 10,
-    margin: 5,
-  },
-
-  button: {
-    width: 100,
-    padding: 5,
-    backgroundColor: '#ed931c',
-    borderWidth: 5,
-    borderColor: 'white',
-    borderRadius: 20,
-    marginLeft: '20%',
-    marginTop: '25%'
-  },
-
-  button2: {
-    width: 50,
-    padding: 5,
-    backgroundColor: '#ed931c',
-    borderWidth: 5,
-    borderColor: 'white',
-    borderRadius: 20,
-    marginLeft: '20%',
   },
 });

@@ -35,12 +35,12 @@ export default function MyTabsBar() {
             return <Ionicons name={iconName} size={size} color={color} />;
           },
         })}
-        
         tabBarPosition={'bottom'}
         tabBarOptions={{
           activeTintColor: '#fff',
           inactiveTintColor: 'gray',
           showIcon:'true',
+          keyboardHidesTabBar: true,
           indicatorStyle: {
             backgroundColor: '#ed931c',
             height: '80%',

@@ -17,6 +17,7 @@ const actions = [
   },
 ];
 
+
 export default function SoundHubScreen({ navigation }) {
 
   let currentUserUID = firebase.auth().currentUser.uid;
