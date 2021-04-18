@@ -1,6 +1,6 @@
 import * as firebase from 'firebase/app'
 import { Alert } from 'react-native';
-
+import React, { useEffect, useState } from 'react';
 // Firebase packages
 import 'firebase/firestore';
 import 'firebase/storage';
@@ -104,12 +104,13 @@ export async function loadClips() {
             soundClips = tempArray;
             console.log(tempArray.length)
           }       
-        });
+        })
       });
     })
   }).catch(function (error) {
     console.log(error);
   });
+
 }
 
 export function getClips() {

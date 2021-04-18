@@ -14,12 +14,20 @@ const actions = [
     color: "#ed931c",
     icon: <Ionicons name="mic-circle-outline" color="white" size={26} ></Ionicons>
   },
+  {
+    text: "Refresh clips",
+    name: "bt_ref",
+    position: 2,
+    color: "#ed931c",
+    icon: <Ionicons name="mic-circle-outline" color="white" size={26} ></Ionicons>
+  },
 ];
 export default function SoundHubScreen({ navigation }) {
   const [sound, setSound] = React.useState();
-
+  const [refresh, setRefresh] = React.useState();
   const soundObject = new Audio.Sound();
-
+  // For refreshing
+  var ref;  
   // loading clips on app start
   var clips = getClips();
 
@@ -117,6 +125,11 @@ export default function SoundHubScreen({ navigation }) {
         onPressItem={name => {
           if (name == "bt_rec") {
             navigation.navigate('Recording')
+          }
+          if (name == "bt_ref") {
+
+            setRefresh(clips)
+            
           }
           console.log(`selected button: ${name}`);
         }}

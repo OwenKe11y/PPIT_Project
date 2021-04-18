@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View, Text, Alert, Image, ImageBackground } from 'react-native';
 import * as firebase from 'firebase';
 import { Audio } from 'expo-av';
-import { getClips, getNotes} from '../../firebase/firebaseMethods';
+import { getClips, getNotes, loadClips } from '../../firebase/firebaseMethods';
 
 export var firstNameUpload;
 export var lastNameUpload;
 export var clips;
+var loadCheck;
 
 export default function LoadingScreen({ navigation }) {
 
@@ -15,7 +16,8 @@ export default function LoadingScreen({ navigation }) {
   const [lastName, setLastName] = useState('');
   const [name, setName] = useState('');
   const [sound, setSound] = useState();
-  const [refresh, setRefresh] = useState(0);
+  const [appear, setAppear] = useState(0);
+  const [hide, setHide] = useState(100);
 
   useEffect(
     () => {
@@ -45,31 +47,51 @@ export default function LoadingScreen({ navigation }) {
             setLastName(dataObj.lastName)
             firstNameUpload = dataObj.firstName;
             lastNameUpload = dataObj.lastName;
-            clips = getClips();
             getNotes();
-            return clips;
           }
         } catch (err) {
-          Alert.alert('There is an error.', err.message)
+          console.log(err)
         }
+      }
+      // Make sure user is loaded
+      if (firstNameUpload) {
+        if (loadCheck != 1)
+          try {
+            loadClips()
+          } catch (error) {
+            console.log(error)
+          }
+        loadcheck = 1;
       }
     }
   );
 
   function renderWelcome() {
-    
+    setTimeout(() => {
+      setHide(0)
+      setAppear(100)
+    }, 5000)
     return (
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Welcome {name}!</Text>
-          <Image source={require('../../assets/waveform.gif')} style={styles.waveform}></Image>
+          <View style={{ opacity: hide, height: hide }}>
+            <Image source={require('../../assets/waveform.gif')} style={styles.waveform}></Image>
+            <TouchableOpacity>
+              <Text style={styles.buttonText}>loading</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SoundHub')} >
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Sign In')}>
-          <Text style={styles.buttonText}>Sign in again</Text>
-        </TouchableOpacity>
+
+        <View style={{ opacity: appear, height: appear }}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SoundHub')} >
+            <Text style={styles.buttonText}>Continue</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Sign In')}>
+            <Text style={styles.buttonText}>Sign in again</Text>
+          </TouchableOpacity>
+        </View>
+
       </View>
     );
   }
@@ -114,6 +136,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderRadius: 20,
   },
+
   background: {
     flex: 1,
     justifyContent: 'center',

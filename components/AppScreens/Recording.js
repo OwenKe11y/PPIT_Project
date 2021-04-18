@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Keyboard, Image, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Keyboard, Image, ScrollView, TextInput, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Audio } from 'expo-av';
-import { getClips, upload } from '../../firebase/firebaseMethods';
+import { loadClips, upload } from '../../firebase/firebaseMethods';
 import { firstNameUpload, lastNameUpload } from '../Welcome/LoadingScreen';
 
 var recordOption = 0
@@ -24,11 +24,22 @@ export default function RecordingScreen({ navigation }) {
     if (!name || !desc) {
       Alert.alert('All fields are required.');
     } else {
-      upload(recordingUri, desc, firstNameUpload, lastNameUpload, name);
-      console.log(getClips());
       setView(0);
-      playSound();
+      upload(recordingUri, desc, firstNameUpload, lastNameUpload, name).then(function (load) {
+        loadClips();
+      });
+      DelayUpload();
     }
+  }
+
+  function DelayUpload() {
+    setView(0);
+    navigation.navigate('SoundHub')  
+    setTimeout(() => {
+        Alert.alert('Clip Uploaded, please refresh');
+        
+        playSound();
+      }, 5000)    
   }
 
   // Play Audio
@@ -42,7 +53,7 @@ export default function RecordingScreen({ navigation }) {
     console.log('Playing Sound');
     setView(0);
     await sound.playAsync();
-    
+
   }
 
   React.useEffect(() => {
@@ -124,7 +135,6 @@ export default function RecordingScreen({ navigation }) {
     if (recordOption == 2) {
       return <View style={styles.containerRecord}>
         <Text style={styles.textTitle}>New Recording</Text>
-
         <ScrollView onBlur={Keyboard.dismiss}>
           <Text style={styles.text}>Recording Name</Text>
           <TextInput
@@ -153,6 +163,7 @@ export default function RecordingScreen({ navigation }) {
           </View>
         </ScrollView>
       </View>
+
     }
     console.log("End render function")
   }

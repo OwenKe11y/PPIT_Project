@@ -13,7 +13,7 @@ export default function TunerScreen({ navigation }) {
   });
 
   async function playSound(uri) {
-    console.log(uri)
+    await soundObject.unloadAsync();
     if (uri != "stop") {
       try {
         await soundObject.loadAsync({ uri });
