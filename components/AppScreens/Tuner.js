@@ -53,9 +53,6 @@ export default function TunerScreen({ navigation }) {
       <TouchableOpacity style={styles.buttonFunc} onPress={() => playSound("stop")}>
         <Text style={styles.buttonText}>Stop</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonFunc} onPress={() => noteClips = getNotes()}>
-        <Text style={styles.buttonText}>Load</Text>
-      </TouchableOpacity>
       </ImageBackground>
     </View>
   )

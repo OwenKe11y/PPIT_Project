@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Keyboard, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Keyboard, Image, ScrollView, TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Audio } from 'expo-av';
-import { upload } from '../../firebase/firebaseMethods';
-import { firstNameUpload, lastNameUpload } from '../AppScreens/SoundHub';
+import { getClips, upload } from '../../firebase/firebaseMethods';
+import { firstNameUpload, lastNameUpload } from '../Welcome/LoadingScreen';
 
 var recordOption = 0
 var recordingUri;
 
 export default function RecordingScreen({ navigation }) {
-  const [recording, setRecording] = React.useState();
-  const [view, setView] = React.useState(0);
-  const [sound, setSound] = React.useState();
+  const [recording, setRecording] = useState();
+  const [view, setView] = useState(0);
+  const [sound, setSound] = useState();
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
 
@@ -25,6 +25,8 @@ export default function RecordingScreen({ navigation }) {
       Alert.alert('All fields are required.');
     } else {
       upload(recordingUri, desc, firstNameUpload, lastNameUpload, name);
+      console.log(getClips());
+      setView(0);
       playSound();
     }
   }
@@ -38,7 +40,9 @@ export default function RecordingScreen({ navigation }) {
     setSound(sound);
 
     console.log('Playing Sound');
+    setView(0);
     await sound.playAsync();
+    
   }
 
   React.useEffect(() => {
@@ -113,6 +117,7 @@ export default function RecordingScreen({ navigation }) {
     }
     if (recordOption == 1) {
       return <TouchableOpacity onPress={() => setView(2)}>
+        <Image source={require('../../assets/waveform.gif')} style={styles.waveform}></Image>
         <Ionicons name={'stop'} size={200} color={'#ed931c'} style={{ justifyContent: 'center' }} onPress={() => stopRecording()}></Ionicons>
       </TouchableOpacity>
     }
@@ -138,11 +143,11 @@ export default function RecordingScreen({ navigation }) {
             autoCapitalize="none"
           />
           <View style={styles.containerButtons}>
-            <TouchableOpacity style={styles.button2} onPress={() => setView(0)}>
+            <TouchableOpacity style={styles.button2}>
               <Text style={styles.buttonText} onPress={() => handlePress()}>Confirm</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button2} onPress={() => setView(0)}>
+            <TouchableOpacity style={styles.button2}>
               <Text style={styles.buttonText} onPress={() => playNope()}>Cancel</Text>
             </TouchableOpacity>
           </View>
@@ -156,7 +161,6 @@ export default function RecordingScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.containerRecord}>
-        {console.log("Console: " + recordOption)}
         {renderRecord(recordOption)}
       </View>
     </View>

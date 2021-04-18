@@ -4,19 +4,18 @@ import { Alert } from 'react-native';
 // Firebase packages
 import 'firebase/firestore';
 import 'firebase/storage';
-import { firstNameUpload, lastNameUpload } from '../components/AppScreens/SoundHub';
+import { firstNameUpload, lastNameUpload } from '../components/Welcome/LoadingScreen';
 
 export var soundClips = [];
 export var noteClips = [];
-
-var fName = firstNameUpload;
-var lName = lastNameUpload;
 
 export async function registration(email, password, lastName, firstName) {
   try {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
     const currentUser = firebase.auth().currentUser;
-
+    currentUser.updateProfile({
+      displayName: firstName + " " + lastName
+    })
     const db = firebase.firestore();
     db.collection('users')
       .doc(currentUser.uid)
@@ -100,9 +99,10 @@ export async function loadClips() {
           tempFirstName = metadata.customMetadata.firstName;
           tempLastName = metadata.customMetadata.lastName;
           obj = { link: clipLink, name: clipName, firstName: tempFirstName, lastName: tempLastName, desc: clipDesc}
-          if (tempFirstName == fName && tempLastName == lName) {
+          if (tempFirstName == firstNameUpload && tempLastName == lastNameUpload) {
             tempArray.push(obj);
             soundClips = tempArray;
+            console.log(tempArray.length)
           }       
         });
       });

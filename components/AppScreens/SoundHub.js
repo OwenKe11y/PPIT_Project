@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ImageBackground, Alert} from 'react-native';
+import { View, Text, StyleSheet, FlatList, ImageBackground, Alert } from 'react-native';
 import { Audio } from 'expo-av';
 import { FloatingAction } from "react-native-floating-action";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getClips } from '../../firebase/firebaseMethods';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import * as firebase from 'firebase';
 
 const actions = [
   {
@@ -16,43 +15,10 @@ const actions = [
     icon: <Ionicons name="mic-circle-outline" color="white" size={26} ></Ionicons>
   },
 ];
-
-export var firstNameUpload;
-export var lastNameUpload;
-
 export default function SoundHubScreen({ navigation }) {
-
-  let currentUserUID = firebase.auth().currentUser.uid;
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
   const [sound, setSound] = React.useState();
 
   const soundObject = new Audio.Sound();
-
-  useEffect(() => {
-    async function getUserInfo(){
-      try {
-        let doc = await firebase
-          .firestore()
-          .collection('users')
-          .doc(currentUserUID)
-          .get();
-
-        if (!doc.exists){
-          Alert.alert('No user data found!')
-        } else {
-          let dataObj = doc.data();
-          setFirstName(dataObj.firstName)
-          setLastName(dataObj.lastName)
-          firstNameUpload = dataObj.firstName;
-          lastNameUpload = dataObj.lastName;
-        }
-      } catch (err){
-      Alert.alert('There is an error.', err.message)
-      }
-    }
-    getUserInfo();
-  })
 
   // loading clips on app start
   var clips = getClips();
@@ -93,16 +59,18 @@ export default function SoundHubScreen({ navigation }) {
       : undefined;
   }, [sound]);
 
+
   function renderClips() {
-    if (!clips.length)
+
+    if (clips.length == 0)
       return <TouchableOpacity onPress={() => playSound()}>
         <Text style={{
           textAlign: 'center',
           backgroundColor: '#ed931c',
           borderRadius: 10,
           padding: 7,
-        }}>Load Clips
-      </Text>
+        }}>Refresh
+        </Text>
       </TouchableOpacity>
     else
       return <View>
@@ -112,18 +80,18 @@ export default function SoundHubScreen({ navigation }) {
           renderItem=
           {({ item }) => <TouchableOpacity style={styles.itemStyle}
             onPress={() => playClip(item.link)}>
-            <View style={{ paddingBottom: 10, height:'10%', flex:1 }}>
-              <Text style={{ marginLeft: '25%',fontSize:25, color:'#fff'}}>
+            <View style={{ paddingBottom: 10, height: '10%', flex: 1 }}>
+              <Text style={{ marginLeft: '25%', fontSize: 25, color: '#fff' }}>
                 {item.name}
               </Text>
-              <Text style={{ marginLeft: '28%', fontSize:15, color:'#e6e3e3'}}>
+              <Text style={{ marginLeft: '28%', fontSize: 15, color: '#e6e3e3' }}>
                 Description - {item.desc}
               </Text>
-              <Text style={{ marginLeft: '28%', fontSize:15, color:'#e6e3e3'}}>
+              <Text style={{ marginLeft: '28%', fontSize: 15, color: '#e6e3e3' }}>
                 By - {item.firstName + " " + item.lastName}
               </Text>
-              <Ionicons name={'disc'} size={80} color={'white'} style={{marginTop:-60}} />
-              <Ionicons name={'play'} size={40} color={'white'} style={{marginTop:-50, marginLeft:'87%'}} />
+              <Ionicons name={'disc'} size={80} color={'white'} style={{ marginTop: -60 }} />
+              <Ionicons name={'play'} size={40} color={'white'} style={{ marginTop: -50, marginLeft: '87%' }} />
             </View>
 
           </TouchableOpacity>}
