@@ -19,7 +19,7 @@ const actions = [
     name: "bt_ref",
     position: 2,
     color: "#ed931c",
-    icon: <Ionicons name="mic-circle-outline" color="white" size={26} ></Ionicons>
+    icon: <Ionicons name="refresh-circle-outline" color="white" size={26} ></Ionicons>
   },
 ];
 export default function SoundHubScreen({ navigation }) {

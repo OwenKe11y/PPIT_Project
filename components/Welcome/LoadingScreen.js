@@ -21,6 +21,8 @@ export default function LoadingScreen({ navigation }) {
 
   useEffect(
     () => {
+
+      
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           currentUserUID = firebase.auth().currentUser.uid;
@@ -31,8 +33,20 @@ export default function LoadingScreen({ navigation }) {
         }
         getUserInfo();
       });
+      // Make sure user is loaded
+      if (firstNameUpload) {
+        if (loadCheck != 1)
+          try {
+            loadClips()
+          } catch (error) {
+            console.log(error)
+          }
+        loadcheck = 1;
+      }
+    }
+  );
 
-      async function getUserInfo() {
+        async function getUserInfo() {
         try {
           let doc = await firebase
             .firestore()
@@ -53,24 +67,15 @@ export default function LoadingScreen({ navigation }) {
           console.log(err)
         }
       }
-      // Make sure user is loaded
-      if (firstNameUpload) {
-        if (loadCheck != 1)
-          try {
-            loadClips()
-          } catch (error) {
-            console.log(error)
-          }
-        loadcheck = 1;
-      }
-    }
-  );
 
   function renderWelcome() {
+    if(hide == 100){
+      console.log("Test")
     setTimeout(() => {
       setHide(0)
       setAppear(100)
     }, 5000)
+  }
     return (
       <View style={styles.container}>
         <View style={styles.titleContainer}>
@@ -123,7 +128,7 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    backgroundColor: '#3FC5AB',
+    backgroundColor: '#ed931c',
     alignItems: 'center',
     justifyContent: 'center',
   },

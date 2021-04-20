@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { signIn } from '../../firebase/firebaseMethods';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export default function SignIn() {
+export default function SignIn({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -15,7 +16,7 @@ export default function SignIn() {
     if (!password) {
       Alert.alert('Password field is required.');
     }
-    navigation.replace('LoadingScreen');
+    navigation.replace('Loading');
     signIn(email, password);
     setEmail('');
     setPassword('');
@@ -23,6 +24,7 @@ export default function SignIn() {
 
   return (
     <View style={styles.container}>
+      <Ionicons name={'disc'} size={200} color={'white'} style={{ marginTop: -200 }} />
       <Text style={styles.text}>Sign in to your account:</Text>
 
       <TextInput
@@ -51,14 +53,13 @@ export default function SignIn() {
 const styles = StyleSheet.create({
   button: {
     width: 200,
-    padding: 5,
-    backgroundColor: '#ff9999',
     borderWidth: 2,
     borderColor: 'white',
-    borderRadius: 15,
-    alignSelf: 'center',
-    margin: "2%",
+    backgroundColor: '#4D2973',
+    padding: 14,
+    margin: '8%'
   },
+
   buttonText: {
     fontSize:20,
     color: 'white',
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    backgroundColor: '#3FC5AB',
+    backgroundColor: '#ed931c',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     width: 300,
     fontSize:18,
     borderWidth: 1,
-    borderColor:'#a4eddf',
+    borderColor:'#fff',
     padding: 10,
     margin: 5,
   },
@@ -85,6 +86,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     margin: 10,
     fontWeight: 'bold',
-    color: '#2E6194',
+    color: '#fff',
   }
 });

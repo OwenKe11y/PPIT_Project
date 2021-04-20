@@ -41,7 +41,8 @@ export async function signIn(email, password) {
 
 export async function loggingOut() {
   try {
-    await firebase.auth().signOut();
+    await firebase.auth().signOut()
+    
   } catch (err) {
     Alert.alert('There is something wrong!', err.message);
   }
@@ -98,12 +99,12 @@ export async function loadClips() {
           clipDesc = metadata.customMetadata.desc;
           tempFirstName = metadata.customMetadata.firstName;
           tempLastName = metadata.customMetadata.lastName;
-          obj = { link: clipLink, name: clipName, firstName: tempFirstName, lastName: tempLastName, desc: clipDesc}
+          obj = { link: clipLink, name: clipName, firstName: tempFirstName, lastName: tempLastName, desc: clipDesc }
           if (tempFirstName == firstNameUpload && tempLastName == lastNameUpload) {
             tempArray.push(obj);
             soundClips = tempArray;
             console.log(tempArray.length)
-          }       
+          }
         })
       });
     })
@@ -144,7 +145,7 @@ export async function loadNotes() {
         clipRef.getMetadata().then(function (metadata) {
           noteName = metadata.name;
           noteUri = url;
-          obj = { note: noteName, uri: noteUri}
+          obj = { note: noteName, uri: noteUri }
           tempArray.push(obj);
           setArray(tempArray);
         });
@@ -157,7 +158,7 @@ export async function loadNotes() {
 
 function setArray(temp) {
   noteClips = temp;
-  
+
 }
 
 export function getNotes() {
