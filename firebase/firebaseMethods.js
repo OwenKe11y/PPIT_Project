@@ -52,6 +52,20 @@ export async function loggingOut() {
 // SoundHub
 //
 
+// Delete Clip
+
+export async function deleteClip(name) {
+
+  var deleteRef = firebase.storage().ref().child('Clips/' + name);
+
+  // Delete the file
+  deleteRef.delete().then(function() {
+    Alert.alert("Clip deleted")
+  }).catch(function(error) {
+    Alert.alert("Failed to delete - " + error)
+  });
+}
+
 // Uploads an image to firebase storage
 export async function upload(uri, desc, firstName, lastName, clipName) {
   try {

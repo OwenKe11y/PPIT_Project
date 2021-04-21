@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList, ImageBackground, Alert } from 'react-
 import { Audio } from 'expo-av';
 import { FloatingAction } from "react-native-floating-action";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { getClips } from '../../firebase/firebaseMethods';
+import { deleteClip, getClips } from '../../firebase/firebaseMethods';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const actions = [
@@ -22,12 +22,29 @@ const actions = [
     icon: <Ionicons name="refresh-circle-outline" color="white" size={26} ></Ionicons>
   },
 ];
+
 export default function SoundHubScreen({ navigation }) {
   const [sound, setSound] = React.useState();
   const [refresh, setRefresh] = React.useState();
   const soundObject = new Audio.Sound();
-  // For refreshing
-  var ref;  
+  // Button for delete
+  function deleteClipButton(name) {
+    console.log(name)
+    Alert.alert(
+      "Do you want to delete this clip?",
+      "",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "Delete", onPress: () => deleteClip(name) }
+      ],
+      { cancelable: false }
+    );
+  }
+
   // loading clips on app start
   var clips = getClips();
 
@@ -87,7 +104,7 @@ export default function SoundHubScreen({ navigation }) {
           data={clips}
           renderItem=
           {({ item }) => <TouchableOpacity style={styles.itemStyle}
-            onPress={() => playClip(item.link)}>
+            onPress={() => playClip(item.link)} onLongPress={() => deleteClipButton(item.name)}>
             <View style={{ paddingBottom: 10, height: '10%', flex: 1 }}>
               <Text style={{ marginLeft: '25%', fontSize: 25, color: '#fff' }}>
                 {item.name}
@@ -129,7 +146,7 @@ export default function SoundHubScreen({ navigation }) {
           if (name == "bt_ref") {
 
             setRefresh(clips)
-            
+
           }
           console.log(`selected button: ${name}`);
         }}
