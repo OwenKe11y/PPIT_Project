@@ -16,8 +16,9 @@ export default function SignIn({ navigation }) {
     if (!password) {
       Alert.alert('Password field is required.');
     }
-    navigation.replace('Loading');
-    signIn(email, password);
+    signIn(email, password).then(function(){
+       navigation.replace('Loading');
+    });
     setEmail('');
     setPassword('');
   };

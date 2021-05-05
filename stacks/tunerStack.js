@@ -11,14 +11,12 @@ const Logout = () => (
   <TouchableOpacity
     //use navigation from Navigation Stack to switch to Grid
     onPress={() => {
-      loggingOut()
+      
     }}>
-    <Ionicons name={"log-out"} size={32} color="white" />
-
+    
 
   </TouchableOpacity>
 )
-
 
 export default function TunerStack() {
   return (

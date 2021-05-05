@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View, Text, Alert, Image, ImageBackground } from 'react-native';
 import * as firebase from 'firebase';
 import { Audio } from 'expo-av';
-import { getClips, getNotes, loadClips } from '../../firebase/firebaseMethods';
+import { getClips, getNotes, loadClips, loggingOut } from '../../firebase/firebaseMethods';
 
 export var firstNameUpload;
 export var lastNameUpload;
@@ -21,8 +21,6 @@ export default function LoadingScreen({ navigation }) {
 
   useEffect(
     () => {
-
-      
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           currentUserUID = firebase.auth().currentUser.uid;
@@ -91,9 +89,6 @@ export default function LoadingScreen({ navigation }) {
         <View style={{ opacity: appear, height: appear }}>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SoundHub')} >
             <Text style={styles.buttonText}>Continue</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Sign In')}>
-            <Text style={styles.buttonText}>Sign in again</Text>
           </TouchableOpacity>
         </View>
 

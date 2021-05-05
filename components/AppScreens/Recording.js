@@ -46,7 +46,7 @@ export default function RecordingScreen({ navigation }) {
   async function playNope() {
     console.log('Loading Sound');
     const { sound } = await Audio.Sound.createAsync(
-      require('../../assets/Nope.mp3')
+      require('../../assets/CancelClip.mp3')
     );
     setSound(sound);
 
